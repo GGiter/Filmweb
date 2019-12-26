@@ -20,7 +20,7 @@ class MainWindow(QWidget):
 
         self.layout = QGridLayout()
         self.layout.addWidget(label1,1,0)
-        
+
         self.scroll()
 
         layoutH = QHBoxLayout()
@@ -46,8 +46,16 @@ class MainWindow(QWidget):
         mygroupbox = QGroupBox()
         myform = QFormLayout()
 
+        labels = []
+        buttons = []
+
         for title in db.getMovies():
-            myform.addRow(QLabel(title),QPushButton("&Rate", self))
+            label = QLabel(title)
+            button = QPushButton("&Rate", self)
+            button.clicked.connect(lambda: self.rateMovie(title))
+            myform.addRow(label,button)
+            labels.append(label)    
+            buttons.append(button)
         
         mygroupbox.setLayout(myform)
         scroll = QScrollArea()
@@ -55,6 +63,10 @@ class MainWindow(QWidget):
         scroll.setWidgetResizable(True) 
         scroll.setFixedHeight(200)
         self.layout.addWidget(scroll,1,1)
+
+
+    def rateMovie(self,title):
+        pass
 
     def closeEvent(self, event):
 
