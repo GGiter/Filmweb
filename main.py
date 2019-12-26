@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout
-from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox
+from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox , QScrollArea , QGroupBox , QFormLayout 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 import os
@@ -18,8 +18,10 @@ class MainWindow(QWidget):
 
         label1 = QLabel('New movies:', self)
 
-        layout = QGridLayout()
-        layout.addWidget(label1,1,1)
+        self.layout = QGridLayout()
+        self.layout.addWidget(label1,1,0)
+        
+        self.scroll()
 
         layoutH = QHBoxLayout()
 
@@ -31,16 +33,29 @@ class MainWindow(QWidget):
         layoutH.addWidget(loginBtn)
         layoutH.addWidget(registerBtn)
 
-        layout.addLayout(layoutH,2,0,1,3)
+        self.layout.addLayout(layoutH,2,0,1,3)
 
-        self.setLayout(layout)
+        self.setLayout(self.layout)
 
-        self.setGeometry(3,3,300,100)
+        self.setGeometry(20,20,500,500)
         self.setWindowIcon(QIcon(os.path.dirname(os.path.realpath(__file__)) + '/movie.png'))
         self.setWindowTitle('Filmweb')
         self.show()
 
-    
+    def scroll(self):
+        mygroupbox = QGroupBox()
+        myform = QFormLayout()
+
+        for title in db.getMovies():
+            myform.addRow(QLabel(title),QPushButton("&Rate", self))
+        
+        mygroupbox.setLayout(myform)
+        scroll = QScrollArea()
+        scroll.setWidget(mygroupbox)
+        scroll.setWidgetResizable(True) 
+        scroll.setFixedHeight(200)
+        self.layout.addWidget(scroll,1,1)
+
     def closeEvent(self, event):
 
         answer = QMessageBox.question(self, 'Warning',"Do you really want to leave?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
