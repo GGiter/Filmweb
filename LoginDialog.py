@@ -3,6 +3,8 @@ from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QLabel, QLineEdit
 from PyQt5.QtWidgets import QGridLayout
 
+
+# to do add validation for register
 class LoginDialog(QDialog):
     """ Login dialog window """
 

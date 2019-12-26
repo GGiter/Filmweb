@@ -4,6 +4,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 import os
 from LoginDialog import LoginDialog , RegisterDialog
+from database import Database
+
+db = None
 
 class MainWindow(QWidget):
     def __init__(self, parent = None):
@@ -63,6 +66,11 @@ class MainWindow(QWidget):
                                 'Empty login or password!', QMessageBox.Ok)
             return
 
+        if not db.loginUser(login,password):
+            QMessageBox.warning(self, 'Error',
+                                'Wrong login or password!', QMessageBox.Ok)
+            return
+
         QMessageBox.information(self,
             'Information:','Logged succesfully!', QMessageBox.Ok)
 
@@ -76,6 +84,8 @@ class MainWindow(QWidget):
                                 'Empty login or email or password!', QMessageBox.Ok)
             return
 
+        db.registerUser(login,email,password)
+
         QMessageBox.information(self,
             'Information', 'Registered succesfully !', QMessageBox.Ok)
 
@@ -83,5 +93,6 @@ if __name__ == '__main__':
     import sys
 
     app = QApplication(sys.argv)
+    db = Database('filmweb.db')
     main_window = MainWindow()
     sys.exit(app.exec_())
