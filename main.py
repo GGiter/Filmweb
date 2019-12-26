@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout
 from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
+import os
 
 class MainWindow(QWidget):
     def __init__(self, parent = None):
@@ -29,6 +30,7 @@ class MainWindow(QWidget):
         self.setLayout(layout)
 
         self.setGeometry(3,3,300,100)
+        self.setWindowIcon(QIcon(os.path.dirname(os.path.realpath(__file__)) + '/movie.png'))
         self.setWindowTitle('Filmweb')
         self.show()
 
