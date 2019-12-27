@@ -7,6 +7,7 @@ from LoginDialog import LoginDialog , RegisterDialog
 from database import Database
 
 db = None
+current_user = None
 
 class MainWindow(QWidget):
     def __init__(self, parent = None):
@@ -25,13 +26,17 @@ class MainWindow(QWidget):
 
         layoutH = QHBoxLayout()
 
-        loginBtn = QPushButton("&Login", self)
-        loginBtn.clicked.connect(self.login)
-        registerBtn = QPushButton("&Register", self)
-        registerBtn.clicked.connect(self.register)
+        self.loginBtn = QPushButton("&Login", self)
+        self.loginBtn.clicked.connect(self.login)
+        self.registerBtn = QPushButton("&Register", self)
+        self.registerBtn.clicked.connect(self.register)
+        self.logoutBtn = QPushButton("&Logout",self)
+        self.logoutBtn.hide()
+        self.logoutBtn.clicked.connect(self.logout)
 
-        layoutH.addWidget(loginBtn)
-        layoutH.addWidget(registerBtn)
+        layoutH.addWidget(self.loginBtn)
+        layoutH.addWidget(self.registerBtn)
+        layoutH.addWidget(self.logoutBtn)
 
         self.layout.addLayout(layoutH,2,0,1,3)
 
@@ -46,15 +51,20 @@ class MainWindow(QWidget):
         mygroupbox = QGroupBox()
         myform = QFormLayout()
 
-        labels = []
+        title_labels = []
         buttons = []
 
         for movie in db.getMovies():
-            label = QLabel(movie.get_title())
+            box_layout = QHBoxLayout()
+            title_label = QLabel(movie.get_title())
+            avg_rate_label = QLabel(str(movie.get_avg_rate()))
             button = QPushButton("&Rate", self)
-            button.clicked.connect(lambda: self.rateMovie(movie))
-            myform.addRow(label,button)
-            labels.append(label)    
+            button.clicked.connect(lambda: self.rateMovie(movie,avg_rate_label ))
+            box_layout.addWidget(title_label)
+            box_layout.addWidget(avg_rate_label)
+            box_layout.addWidget(button)
+            myform.addRow(box_layout)
+            title_labels.append(title_label)    
             buttons.append(button)
         
         mygroupbox.setLayout(myform)
@@ -65,8 +75,9 @@ class MainWindow(QWidget):
         self.layout.addWidget(scroll,1,1)
 
 
-    def rateMovie(self,movie):
-        pass
+    def rateMovie(self,movie,label):
+        movie.rate(5,current_user)
+        label.setText(str(movie.get_avg_rate()))
 
     def closeEvent(self, event):
 
@@ -93,13 +104,19 @@ class MainWindow(QWidget):
                                 'Empty login or password!', QMessageBox.Ok)
             return
 
-        if db.loginUser(login,password) is None:
+        current_user = db.loginUser(login,password)
+
+        if  current_user is None:
             QMessageBox.warning(self, 'Error',
                                 'Wrong login or password!', QMessageBox.Ok)
             return
 
         QMessageBox.information(self,
             'Information:','Logged succesfully!', QMessageBox.Ok)
+
+        self.loginBtn.hide()
+        self.registerBtn.hide()
+        self.logoutBtn.show()
 
     def register(self):
         login, email, password, ok = RegisterDialog.getLoginPassword(self)
@@ -111,10 +128,22 @@ class MainWindow(QWidget):
                                 'Empty login or email or password!', QMessageBox.Ok)
             return
 
-        db.registerUser(login,email,password)
+        current_user = db.registerUser(login,email,password)
 
         QMessageBox.information(self,
             'Information', 'Registered succesfully !', QMessageBox.Ok)
+
+
+        self.loginBtn.hide()
+        self.registerBtn.hide()
+        self.logoutBtn.show()
+
+    def logout(self):
+        current_user = None
+
+        self.loginBtn.show()
+        self.registerBtn.show()
+        self.logoutBtn.hide()
 
 if __name__ == '__main__':
     import sys

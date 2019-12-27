@@ -8,10 +8,16 @@ class Movie :
         self.number_of_users = 0
 
     def rate(self,value,user):
+        if user is None:
+            return False
+
         self.avg_rate *= self.number_of_users
         self.avg_rate += value
         self.number_of_users += 1
         self.avg_rate /= self.number_of_users
+        self.avg_rate = int(self.avg_rate)
+
+        return True
         
 
     def get_title(self):
@@ -21,4 +27,4 @@ class Movie :
         return self.director
 
     def get_avg_rate(self):
-        return self.get_avg_rate
+        return self.avg_rate
