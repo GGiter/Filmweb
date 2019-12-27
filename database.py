@@ -1,10 +1,13 @@
 from PyQt5 import QtSql, QtGui 
 from PyQt5.QtWidgets import QApplication , QWidget , QMessageBox , qApp
 import os
+from movie import Movie
+from user import User
 
 class Database:
    def __init__(self, name):
-      self.createDB(name)
+      if self.createDB(name):
+         self.insertInitialData()
 
    def createDB(self,database_name):
       self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
@@ -39,28 +42,34 @@ class Database:
 
       query.exec_(f"INSERT INTO user (login,email,password) VALUES ('{login}', '{email}' ,'{password}')")
 
+      return User(login,email,password)
+
 
    def loginUser(self,login,password):
       query = QtSql.QSqlQuery()
 
       query.exec_(f"SELECT * FROM user WHERE login = '{login}'")
       query.next()
-      return str(query.record().value("password")) == password
+
+      if query.record().value("password") != password:
+         return None
+
+      return User(login,query.record().value("email"),password)
 
    
    def getMovies(self):
       query = QtSql.QSqlQuery()
 
       query.exec_(f"SELECT * FROM movies")
-      titles = []
+      movies = []
       while query.next():
-         titles.append(str(query.record().value("title")))
+         movies.append(Movie(query.record().value("title"),query.record().value("director")))
       
-      return titles
+      return movies
 
    def insertInitialData(self):
       query = QtSql.QSqlQuery()
          
-      query.exec_("INSERT INTO movies (title,director) VALUES ('Show', 'Alfred')")
+      query.exec_("INSERT INTO movies (id,title,director) VALUES (1,'Show', 'Alfred')")
 
-      query.exec_("INSERT INTO user (login,email,password) VALUES ('Bob', 'ross@net.com' ,'Ross')")
+      query.exec_("INSERT INTO user (id,login,email,password) VALUES (1,'Bob', 'ross@net.com' ,'Ross')")

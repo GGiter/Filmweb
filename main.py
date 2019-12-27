@@ -49,10 +49,10 @@ class MainWindow(QWidget):
         labels = []
         buttons = []
 
-        for title in db.getMovies():
-            label = QLabel(title)
+        for movie in db.getMovies():
+            label = QLabel(movie.get_title())
             button = QPushButton("&Rate", self)
-            button.clicked.connect(lambda: self.rateMovie(title))
+            button.clicked.connect(lambda: self.rateMovie(movie))
             myform.addRow(label,button)
             labels.append(label)    
             buttons.append(button)
@@ -65,7 +65,7 @@ class MainWindow(QWidget):
         self.layout.addWidget(scroll,1,1)
 
 
-    def rateMovie(self,title):
+    def rateMovie(self,movie):
         pass
 
     def closeEvent(self, event):
@@ -93,7 +93,7 @@ class MainWindow(QWidget):
                                 'Empty login or password!', QMessageBox.Ok)
             return
 
-        if not db.loginUser(login,password):
+        if db.loginUser(login,password) is None:
             QMessageBox.warning(self, 'Error',
                                 'Wrong login or password!', QMessageBox.Ok)
             return
