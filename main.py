@@ -25,7 +25,7 @@ class MainWindow(QWidget):
         self.layout = QGridLayout()
         self.layout.addWidget(label1,1,0)
 
-        self.scroll()
+        self.show_latest()
 
         layoutMovieH = QHBoxLayout()
 
@@ -92,23 +92,23 @@ class MainWindow(QWidget):
         self.layout.addWidget(scroll,1,1)
 
     def show_recommendations(self):
-        pass
-
-    def scroll(self):
         mygroupbox = QGroupBox()
         myform = QFormLayout()
 
         title_labels = []
         buttons = []
 
-        for movie in db.getMovies():
+        for movie in sorted(db.getMovies(), key = lambda movie: movie.get_avg_rate()):
             box_layout = QHBoxLayout()
             title_label = QLabel(movie.get_title())
             avg_rate_label = QLabel(str(movie.get_avg_rate()))
             button = QPushButton("&Rate", self)
             button.clicked.connect(lambda: self.rateMovie(movie,avg_rate_label,RateDialog.getRate(self)))
+            details_button = QPushButton("&Details", self)
+            details_button.clicked.connect(lambda: DetailsDialog.get_movie_details(movie,self))
             box_layout.addWidget(title_label)
             box_layout.addWidget(avg_rate_label)
+            box_layout.addWidget(details_button)
             box_layout.addWidget(button)
             myform.addRow(box_layout)
             title_labels.append(title_label)    
@@ -120,7 +120,6 @@ class MainWindow(QWidget):
         scroll.setWidgetResizable(True) 
         scroll.setFixedHeight(200)
         self.layout.addWidget(scroll,1,1)
-
 
     def rateMovie(self,movie,label,value):
         movie.rate(value,self.current_user)

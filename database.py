@@ -26,7 +26,7 @@ class Database:
       query = QtSql.QSqlQuery()
       
       query.exec_("CREATE TABLE movies(id INTEGER PRIMARY KEY AUTOINCREMENT , "
-         "title varchar(20), director varchar(20))")
+         "title varchar(20), director varchar(20) ,description varchar(20))")
          
       query.exec_("CREATE TABLE user(id INTEGER PRIMARY KEY AUTOINCREMENT, "
          "login varchar(20), email varchar(20), password varchar(20))")
@@ -70,6 +70,6 @@ class Database:
    def insertInitialData(self):
       query = QtSql.QSqlQuery()
          
-      query.exec_("INSERT INTO movies (id,title,director) VALUES (1,'Show', 'Alfred')")
+      query.exec_("INSERT INTO movies (id,title,director,description) VALUES (1,'Show', 'Alfred','Lorem lorem')")
 
       query.exec_("INSERT INTO user (id,login,email,password) VALUES (1,'Bob', 'ross@net.com' ,'Ross')")

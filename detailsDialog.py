@@ -11,8 +11,12 @@ class DetailsDialog(QDialog):
         super(DetailsDialog, self).__init__(parent)
         # widget elements 
         layout = QHBoxLayout(self)
+        self.buttons = QDialogButtonBox(
+            QDialogButtonBox.Ok,
+            Qt.Horizontal, self)
+        self.label = QLabel("Lorem Lorem")
 
-
+        layout.addWidget(self.label)
         layout.addWidget(self.buttons)
         # signals and slots 
         self.buttons.accepted.connect(self.accept)
@@ -21,6 +25,8 @@ class DetailsDialog(QDialog):
         # properties of widget 
         self.setModal(True)
         self.setWindowTitle('Details')
+
+        
 
 
     @staticmethod
