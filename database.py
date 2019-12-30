@@ -64,6 +64,17 @@ class Database:
 
       return User(login,query.record().value("email"),password)
 
+   def get_users(self):
+      query = QtSql.QSqlQuery()
+
+      query.exec_(f"SELECT * FROM user")
+      users = []
+      while query.next():
+         users.append(User(query.record().value("login"),query.record().value("email"),
+         query.record().value("password")
+         ))
+      
+      return users
    
    def get_movies(self):
       query = QtSql.QSqlQuery()
@@ -71,7 +82,9 @@ class Database:
       query.exec_(f"SELECT * FROM movies")
       movies = []
       while query.next():
-         movies.append(Movie(query.record().value("id"),query.record().value("title"),query.record().value("director")))
+         movies.append(Movie(query.record().value("title"),query.record().value("director"),
+         query.record().value("description"),query.record().value("genre"),query.record().value("id")
+         ))
       
       return movies
 
@@ -81,3 +94,8 @@ class Database:
       query.exec_("INSERT INTO movies (id,title,director,description,actors,genre) VALUES (1,'Show', 'Alfred','Lorem lorem','Pip brad','action')")
 
       query.exec_("INSERT INTO user (id,login,email,password) VALUES (1,'Bob', 'ross@net.com' ,'Ross')")
+
+   def add_movie(self,movie):
+      query = QtSql.QSqlQuery()
+
+      query.exec_(f"INSERT INTO movies (title,director,description,actors,genre) VALUES ('{movie.get_title()}', '{movie.get_director()}','{movie.get_description()}','{movie.get_actors()}','{movie.get_genre()}')")

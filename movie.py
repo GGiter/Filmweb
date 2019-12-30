@@ -1,10 +1,13 @@
 from user import User
 
 class Movie :
-    def __init__(self,id,title,director):
+    def __init__(self,title,director,description,actors,genre,id = None):
         self.id = id
         self.title = title
         self.director = director
+        self.description = description
+        self.actors = actors
+        self.genre = genre
         self.avg_rate = 0 
         self.number_of_users = 0
 
@@ -29,6 +32,15 @@ class Movie :
 
     def get_avg_rate(self):
         return self.avg_rate
+
+    def get_description(self):
+        return self.description
+
+    def get_actors(self):
+        return self.actors
+
+    def get_genre(self):
+        return self.actors
 
     def get_id(self):
         return self.id

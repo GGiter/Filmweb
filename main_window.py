@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 from filmweb_window import FilmwebWindow
 from dialogs.login_dialog import LoginDialog , RegisterDialog
 from dialogs.rate_dialog import RateDialog
+from dialogs.add_movie_dialog import AddMovieDialog
 from database import Database
 from dialogs.app_instance import AppInstance
 from dialogs.details_dialog import DetailsDialog
@@ -29,6 +30,8 @@ class MainWindow(FilmwebWindow):
         latestBtn.clicked.connect(self.show_latest)
         recommendationsBtn = QPushButton("&Recommendations",self)
         recommendationsBtn.clicked.connect(self.show_recommendations)
+        usersBtn = QPushButton("&Users",self)
+        usersBtn.clicked.connect(self.show_users)
         add_movieBtn = QPushButton("&Add movie",self)
         add_movieBtn.clicked.connect(self.add_movie)
 
@@ -36,7 +39,7 @@ class MainWindow(FilmwebWindow):
         self.layoutUserH = QHBoxLayout()
 
         self.profileBtn = QPushButton("&Profile",self)
-        self.profileBtn.clicked.connect(self.show_profile)
+        self.profileBtn.clicked.connect(lambda: self.show_profile(AppInstance.current_user))
         self.userLabel = QLabel("User")
         self.layoutUserH.addStretch()
         self.layoutUserH.addWidget(self.userLabel)
@@ -57,6 +60,7 @@ class MainWindow(FilmwebWindow):
 
         layoutMovieH.addWidget(latestBtn)
         layoutMovieH.addWidget(recommendationsBtn)
+        layoutMovieH.addWidget(usersBtn)
         layoutMovieH.addStretch()
         layoutMovieH.addWidget(add_movieBtn)
 
@@ -69,10 +73,45 @@ class MainWindow(FilmwebWindow):
 
         self.show()
 
-    def add_movie(self):
-        pass
+    def show_users(self):
+        mygroupbox = QGroupBox()
+        myform = QFormLayout()
 
-    def show_profile(self):
+        for user in AppInstance.db.get_users():
+            box_layout = QHBoxLayout()
+            login_label = QLabel(user.get_login())
+            button = QPushButton("&Profile", self)
+            button.clicked.connect(lambda: self.show_profile(user))
+            box_layout.addWidget(login_label)
+            box_layout.addWidget(button)
+            myform.addRow(box_layout)
+            
+        
+        mygroupbox.setLayout(myform)
+        scroll = QScrollArea()
+        scroll.setWidget(mygroupbox)
+        scroll.setWidgetResizable(True) 
+        scroll.setFixedHeight(200)
+        box_layout = QHBoxLayout()
+        box_layout.addWidget(scroll)
+        self.layout.addLayout(box_layout,2,0)
+
+    def add_movie(self):
+        movie, ok = AddMovieDialog.get_movie_details(self)
+        if not ok:
+            return
+
+        if movie is None:
+            QMessageBox.warning(self, 'Error',
+                                'Empty movie details', QMessageBox.Ok)
+            return
+
+        AppInstance.db.add_movie(movie)
+
+        QMessageBox.information(self,
+            'Information:','Added movie succesfully!', QMessageBox.Ok)
+
+    def show_profile(self,user):
         self.switch_window("Profile")
 
     def show_latest(self):
