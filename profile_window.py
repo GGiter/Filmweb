@@ -19,8 +19,9 @@ class ProfileWindow(FilmwebWindow):
         self.backBtn.clicked.connect(self.show_main_window)
 
         box_layout = QHBoxLayout()
+        box_layout.addStretch()
         box_layout.addWidget(self.backBtn)
-        self.layout.addLayout(box_layout,0,0)
+        self.layout.addLayout(box_layout,2,0)
 
         self.setLayout(self.layout)
 
@@ -34,8 +35,10 @@ class ProfileWindow(FilmwebWindow):
         for review in AppInstance.db.get_user_reviews(self.user):
             box_layout = QHBoxLayout()
             movie_label = QLabel(AppInstance.db.get_field("movies","title",review.get_movie_id()))
+            director_label = QLabel(AppInstance.db.get_field("movies","director",review.get_movie_id()))
             score_label = QLabel(str(review.get_score()))
             box_layout.addWidget(movie_label)
+            box_layout.addWidget(director_label)
             box_layout.addWidget(score_label)
             myform.addRow(box_layout)
             
@@ -54,5 +57,5 @@ class ProfileWindow(FilmwebWindow):
         self.label = QLabel(user.get_login())
         box_layout = QHBoxLayout()
         box_layout.addWidget(self.label)
-        self.layout.addLayout(box_layout,2,0)
+        self.layout.addLayout(box_layout,0,0)
         self.show_reviews()

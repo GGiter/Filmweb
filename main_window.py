@@ -153,7 +153,7 @@ class MainWindow(FilmwebWindow):
         title_labels = []
         buttons = []
 
-        for movie in sorted(AppInstance.db.get_movies(), key = lambda movie: movie.get_avg_rate()):
+        for movie in sorted(AppInstance.db.get_movies(), key = lambda movie: movie.get_avg_rate(),reverse = True):
             box_layout = QHBoxLayout()
             title_label = QLabel(movie.get_title())
             avg_rate_label = QLabel(str(movie.get_avg_rate()))
@@ -181,6 +181,8 @@ class MainWindow(FilmwebWindow):
     def rateMovie(self,movie,label,value):
         movie.rate(value,AppInstance.current_user)
         label.setText(str(movie.get_avg_rate()))
+        if AppInstance.current_user:
+            AppInstance.db.rate_movie(AppInstance.current_user,movie,value)
 
     def login(self):
         login, password, ok = LoginDialog.get_login_password(self)

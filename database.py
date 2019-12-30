@@ -51,7 +51,7 @@ class Database:
 
       query.exec_(f"INSERT INTO user (login,email,password) VALUES ('{login}', '{email}' ,'{password}')")
 
-      return User(login,email,password)
+      return User(login,email,password,query.record().value("id"))
 
 
    def login_user(self,login,password):
@@ -63,7 +63,7 @@ class Database:
       if query.record().value("password") != password:
          return None
 
-      return User(login,query.record().value("email"),password)
+      return User(login,query.record().value("email"),password,query.record().value("id"))
 
    def get_users(self):
       query = QtSql.QSqlQuery()
@@ -72,7 +72,7 @@ class Database:
       users = []
       while query.next():
          users.append(User(query.record().value("login"),query.record().value("email"),
-         query.record().value("password")
+         query.record().value("password"),query.record().value("id")
          ))
       
       return users
@@ -83,16 +83,34 @@ class Database:
       query.exec_(f"SELECT * FROM movies")
       movies = []
       while query.next():
-         movies.append(Movie(query.record().value("title"),query.record().value("director"),
-         query.record().value("description"),query.record().value("genre"),query.record().value("id")
-         ))
+         movie = Movie(query.record().value("title"),query.record().value("director"),
+         query.record().value("description"),query.record().value("actors"),query.record().value("genre"),query.record().value("id")
+         )
+         movies.append(movie)
+         reviews = self.get_movie_reviews(movie)
+         scores = [review.get_score() for review in reviews]
+         if len(reviews) > 0 :
+            movie.set_avg_rate(int(sum(scores)/len(reviews)),len(reviews))
+ 
       
       return movies
 
    def get_user_reviews(self,user):
       query = QtSql.QSqlQuery()
 
-      query.exec_(f"SELECT * FROM reviews")
+      query.exec_(f"SELECT * FROM reviews WHERE player_id = {user.get_id()}")
+      reviews = []
+      while query.next():
+         reviews.append(Review(query.record().value("player_id"),query.record().value("movie_id"),
+         query.record().value("score")
+         ))
+
+      return reviews
+
+   def get_movie_reviews(self,movie):
+      query = QtSql.QSqlQuery()
+
+      query.exec_(f"SELECT * FROM reviews WHERE movie_id = {movie.get_id()}")
       reviews = []
       while query.next():
          reviews.append(Review(query.record().value("player_id"),query.record().value("movie_id"),
@@ -106,7 +124,10 @@ class Database:
          
       query.exec_("INSERT INTO movies (id,title,director,description,actors,genre) VALUES (1,'Show', 'Alfred','Lorem lorem','Pip brad','action')")
 
+      query.exec_("INSERT INTO movies (id,title,director,description,actors,genre) VALUES (2,'Escape', 'John','Ipsilum Ipsilum','Bran','mystery')")
+
       query.exec_("INSERT INTO user (id,login,email,password) VALUES (1,'Bob', 'ross@net.com' ,'Ross')")
+      
 
       query.exec_("INSERT INTO reviews (id,player_id,movie_id,score) VALUES (1,1,1,5)")
 
@@ -114,3 +135,17 @@ class Database:
       query = QtSql.QSqlQuery()
 
       query.exec_(f"INSERT INTO movies (title,director,description,actors,genre) VALUES ('{movie.get_title()}', '{movie.get_director()}','{movie.get_description()}','{movie.get_actors()}','{movie.get_genre()}')")
+
+
+   def rate_movie(self,user,movie,score):
+      query = QtSql.QSqlQuery()
+
+      query.exec_(f"SELECT * FROM reviews WHERE player_id = {user.get_id()} AND player_id = {movie.get_id()}")
+
+      if query.value(0) is None : 
+         query.exec_(f"UPDATE reviews SET score = {score} WHERE player_id = {user.get_id()} AND player_id = {movie.get_id()}")
+      else:
+         query.exec_(f"INSERT INTO reviews (player_id,movie_id,score) VALUES ({user.get_id()},{movie.get_id()},{score})")
+
+      
+      

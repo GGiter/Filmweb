@@ -11,6 +11,10 @@ class Movie :
         self.avg_rate = 0 
         self.number_of_users = 0
 
+    def set_avg_rate(self,avg_rate , number_of_users):
+        self.avg_rate = avg_rate
+        self.number_of_users = number_of_users
+
     def rate(self,value,user):
         if user is None:
             return False
