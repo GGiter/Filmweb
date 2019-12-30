@@ -1,4 +1,4 @@
-from user import User
+from data_objects.user import User
 
 class Movie :
     def __init__(self,title,director,description,actors,genre,id = None):

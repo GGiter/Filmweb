@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout
 from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox , QScrollArea , QGroupBox , QFormLayout 
-from filmweb_window import FilmwebWindow
-from user import User
-from review import Review
+from windows.filmweb_window import FilmwebWindow
+from data_objects.user import User
+from data_objects.review import Review
 from dialogs.app_instance import AppInstance
 
 class ProfileWindow(FilmwebWindow):

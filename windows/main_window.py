@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout , QStackedLayout
 from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox , QScrollArea , QGroupBox , QFormLayout 
 from PyQt5.QtCore import Qt
-from filmweb_window import FilmwebWindow
+from windows.filmweb_window import FilmwebWindow
 from dialogs.login_dialog import LoginDialog , RegisterDialog
 from dialogs.rate_dialog import RateDialog
 from dialogs.add_movie_dialog import AddMovieDialog

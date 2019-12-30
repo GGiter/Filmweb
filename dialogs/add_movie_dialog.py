@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QLabel, QLineEdit , QRadioButton ,QVBoxLayout ,QHBoxLayout
 from PyQt5.QtWidgets import QGridLayout
-from movie import Movie
+from data_objects.movie import Movie
 
 class AddMovieDialog(QDialog):
     def __init__(self, movie, parent=None):

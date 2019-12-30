@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout , QStackedLayout , QMainWindow
-from main_window import MainWindow
-from profile_window import ProfileWindow
+from windows.main_window import MainWindow
+from windows.profile_window import ProfileWindow
 from PyQt5.QtCore import Qt 
-from filmweb_window import FilmwebWindow
+from windows.filmweb_window import FilmwebWindow
 from dialogs.app_instance import AppInstance
 from database import Database
 import os
@@ -27,3 +27,12 @@ class WidgetManager(FilmwebWindow,QMainWindow):
             self.profile_window.set_user(kwargs['user'])
             self.stacked_layout.setCurrentIndex(1)
 
+if __name__ == '__main__':
+    import sys
+
+    app = QApplication(sys.argv)
+    AppInstance.db = Database('filmweb.db')
+    widget_manager = WidgetManager()
+  
+    sys.exit(app.exec_())
+        

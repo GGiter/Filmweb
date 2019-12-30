@@ -1,9 +1,9 @@
 from PyQt5 import QtSql, QtGui 
 from PyQt5.QtWidgets import QApplication , QWidget , QMessageBox , qApp
 import os
-from movie import Movie
-from user import User
-from review import Review
+from data_objects.movie import Movie
+from data_objects.user import User
+from data_objects.review import Review
 
 class Database:
    def __init__(self, name):
