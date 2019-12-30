@@ -2,10 +2,15 @@ from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout
 from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox , QScrollArea , QGroupBox , QFormLayout 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from dialogs import login_dialog , rate_dialog , details_dialog
+
+from dialogs.login_dialog import LoginDialog
+from dialogs.rate_dialog import RateDialog
 from database import Database
-from app_instance import AppInstance
+from dialogs.app_instance import AppInstance
+from dialogs.details_dialog import DetailsDialog
 import os
+
+
 
 class MainWindow(QWidget):
     def __init__(self, parent = None):
@@ -69,12 +74,12 @@ class MainWindow(QWidget):
         title_labels = []
         buttons = []
 
-        for movie in AppInstance.db.getMovies():
+        for movie in AppInstance.db.get_movies():
             box_layout = QHBoxLayout()
             title_label = QLabel(movie.get_title())
             avg_rate_label = QLabel(str(movie.get_avg_rate()))
             button = QPushButton("&Rate", self)
-            button.clicked.connect(lambda: self.rateMovie(movie,avg_rate_label,RateDialog.getRate(self)))
+            button.clicked.connect(lambda: self.rateMovie(movie,avg_rate_label,RateDialog.get_rate(self)))
             details_button = QPushButton("&Details", self)
             details_button.clicked.connect(lambda: DetailsDialog.get_movie_details(movie,self))
             box_layout.addWidget(title_label)
@@ -90,7 +95,9 @@ class MainWindow(QWidget):
         scroll.setWidget(mygroupbox)
         scroll.setWidgetResizable(True) 
         scroll.setFixedHeight(200)
-        self.layout.addWidget(scroll,1,1)
+        box_layout = QHBoxLayout()
+        box_layout.addWidget(scroll)
+        self.layout.addLayout(box_layout,1,1)
 
     def show_recommendations(self):
         mygroupbox = QGroupBox()
@@ -120,7 +127,9 @@ class MainWindow(QWidget):
         scroll.setWidget(mygroupbox)
         scroll.setWidgetResizable(True) 
         scroll.setFixedHeight(200)
-        self.layout.addWidget(scroll,1,1)
+        box_layout = QHBoxLayout()
+        box_layout.addWidget(scroll)
+        self.layout.addLayout(box_layout)
 
     def rateMovie(self,movie,label,value):
         movie.rate(value,AppInstance.current_user)
@@ -151,7 +160,7 @@ class MainWindow(QWidget):
                                 'Empty login or password!', QMessageBox.Ok)
             return
 
-        self.set_is_logged(AppInstance.db.loginUser(login,password))
+        self.set_is_logged(AppInstance.db.login_user(login,password))
 
         if  AppInstance.current_user is None:
             QMessageBox.warning(self, 'Error',
@@ -171,7 +180,7 @@ class MainWindow(QWidget):
                                 'Empty login or email or password!', QMessageBox.Ok)
             return
 
-        self.set_is_logged(AppInstance.db.registerUser(login,email,password))
+        self.set_is_logged(AppInstance.db.register_user(login,email,password))
 
         QMessageBox.information(self,
             'Information', 'Registered succesfully !', QMessageBox.Ok)

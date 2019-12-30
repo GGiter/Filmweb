@@ -15,7 +15,7 @@ class RateDialog(QDialog):
         layout = QHBoxLayout(self)
         self.b1 = QRadioButton("1")
         self.b1.setChecked(True)
-        self.b1.toggled.connect(lambda:self.setRate(1))
+        self.b1.toggled.connect(lambda:self.set_rate(1))
         layout.addWidget(self.b1)
         self.buttons = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel,
@@ -23,23 +23,23 @@ class RateDialog(QDialog):
 
         self.b2 = QRadioButton("2")
         self.b2.setChecked(False)
-        self.b2.toggled.connect(lambda:self.setRate(2))
+        self.b2.toggled.connect(lambda:self.set_rate(2))
         layout.addWidget(self.b2)
 
         self.b3 = QRadioButton("3")
         self.b3.setChecked(False)
-        self.b3.toggled.connect(lambda:self.setRate(3))
+        self.b3.toggled.connect(lambda:self.set_rate(3))
         layout.addWidget(self.b3)
 
 
         self.b4 = QRadioButton("4")
         self.b4.setChecked(False)
-        self.b4.toggled.connect(lambda:self.setRate(4))
+        self.b4.toggled.connect(lambda:self.set_rate(4))
         layout.addWidget(self.b4)
 
         self.b5 = QRadioButton("5")
         self.b5.setChecked(False)
-        self.b5.toggled.connect(lambda:self.setRate(5))
+        self.b5.toggled.connect(lambda:self.set_rate(5))
         layout.addWidget(self.b5)
 
         layout.addWidget(self.buttons)

@@ -1,7 +1,8 @@
 from user import User
 
 class Movie :
-    def __init__(self,title,director):
+    def __init__(self,id,title,director):
+        self.id = id
         self.title = title
         self.director = director
         self.avg_rate = 0 
@@ -28,3 +29,6 @@ class Movie :
 
     def get_avg_rate(self):
         return self.avg_rate
+
+    def get_id(self):
+        return self.id
