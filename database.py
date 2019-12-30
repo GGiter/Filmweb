@@ -27,10 +27,10 @@ class Database:
       query = QtSql.QSqlQuery()
       
       query.exec_("CREATE TABLE movies(id INTEGER PRIMARY KEY AUTOINCREMENT , "
-         "title varchar(20), director varchar(20) ,description varchar(20), actors varchar(100) , genre varchar(20))")
+         "title varchar(20), director varchar(20) ,description varchar(20),duration INT, actors varchar(100) , genre varchar(20), icon_path varchar(100))")
          
       query.exec_("CREATE TABLE user(id INTEGER PRIMARY KEY AUTOINCREMENT, "
-         "login varchar(20), email varchar(20), password varchar(20))")
+         "login varchar(20), email varchar(20), password varchar(20), icon_path varchar(100))")
 
       query.exec_("CREATE TABLE reviews(id INTEGER PRIMARY KEY AUTOINCREMENT,player_id INTEGER, "
          "movie_id INTEGER, score INTEGER)")
@@ -51,7 +51,7 @@ class Database:
 
       query.exec_(f"INSERT INTO user (login,email,password) VALUES ('{login}', '{email}' ,'{password}')")
 
-      return User(login,email,password,query.record().value("id"))
+      return User(login,email,password,query.record().value("icon_path"),query.record().value("id"))
 
 
    def login_user(self,login,password):
@@ -63,7 +63,7 @@ class Database:
       if query.record().value("password") != password:
          return None
 
-      return User(login,query.record().value("email"),password,query.record().value("id"))
+      return User(login,query.record().value("email"),query.record().value("icon_path"),password,query.record().value("id"))
 
    def get_users(self):
       query = QtSql.QSqlQuery()
@@ -72,7 +72,7 @@ class Database:
       users = []
       while query.next():
          users.append(User(query.record().value("login"),query.record().value("email"),
-         query.record().value("password"),query.record().value("id")
+         query.record().value("password"),query.record().value("icon_path"),query.record().value("id")
          ))
       
       return users
@@ -84,7 +84,8 @@ class Database:
       movies = []
       while query.next():
          movie = Movie(query.record().value("title"),query.record().value("director"),
-         query.record().value("description"),query.record().value("actors"),query.record().value("genre"),query.record().value("id")
+         query.record().value("description"),query.record().value("duration"),query.record().value("actors"),query.record().value("genre"),query.record().value("icon_path")
+         ,query.record().value("id")
          )
          movies.append(movie)
          reviews = self.get_movie_reviews(movie)
@@ -122,9 +123,9 @@ class Database:
    def insert_initial_data(self):
       query = QtSql.QSqlQuery()
          
-      query.exec_("INSERT INTO movies (id,title,director,description,actors,genre) VALUES (1,'Show', 'Alfred','Lorem lorem','Pip brad','action')")
+      query.exec_("INSERT INTO movies (id,title,director,description,duration,actors,genre,icon_path) VALUES (1,'Show', 'Alfred','Lorem lorem',1,'Pip brad','action','')")
 
-      query.exec_("INSERT INTO movies (id,title,director,description,actors,genre) VALUES (2,'Escape', 'John','Ipsilum Ipsilum','Bran','mystery')")
+      query.exec_("INSERT INTO movies (id,title,director,description,duration,actors,genre,icon_path) VALUES (2,'Escape', 'John','Ipsilum Ipsilum',2,'Bran','mystery','')")
 
       query.exec_("INSERT INTO user (id,login,email,password) VALUES (1,'Bob', 'ross@net.com' ,'Ross')")
       

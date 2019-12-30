@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout
+from PyQt5.QtGui import QIcon , QPixmap
 from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox , QScrollArea , QGroupBox , QFormLayout 
 from windows.filmweb_window import FilmwebWindow
 from data_objects.user import User
@@ -37,6 +38,10 @@ class ProfileWindow(FilmwebWindow):
             movie_label = QLabel(AppInstance.db.get_field("movies","title",review.get_movie_id()))
             director_label = QLabel(AppInstance.db.get_field("movies","director",review.get_movie_id()))
             score_label = QLabel(str(review.get_score()))
+            if AppInstance.db.get_field("movies","icon_path",review.get_movie_id()) is not "":
+                pic = QLabel()
+                pic.setPixmap(QPixmap(AppInstance.db.get_field("movies","icon_path",review.get_movie_id())))
+                box_layout.addWidget(pic)
             box_layout.addWidget(movie_label)
             box_layout.addWidget(director_label)
             box_layout.addWidget(score_label)

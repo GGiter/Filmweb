@@ -1,13 +1,15 @@
 from data_objects.user import User
 
 class Movie :
-    def __init__(self,title,director,description,actors,genre,id = None):
+    def __init__(self,title,director,description,duration,actors,genre,icon_path = None,id = None):
         self.id = id
         self.title = title
         self.director = director
         self.description = description
+        self.duration = duration
         self.actors = actors
         self.genre = genre
+        self.icon_path = icon_path
         self.avg_rate = 0 
         self.number_of_users = 0
 
@@ -48,3 +50,6 @@ class Movie :
 
     def get_id(self):
         return self.id
+
+    def get_icon_path(self):
+        return self.icon_path

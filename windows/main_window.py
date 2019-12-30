@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout , QStackedLayout
 from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox , QScrollArea , QGroupBox , QFormLayout 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt 
+from PyQt5.QtGui import QIcon ,QPixmap
 from windows.filmweb_window import FilmwebWindow
 from dialogs.login_dialog import LoginDialog , RegisterDialog
 from dialogs.rate_dialog import RateDialog
@@ -82,6 +83,10 @@ class MainWindow(FilmwebWindow):
             login_label = QLabel(user.get_login())
             button = QPushButton("&Profile", self)
             button.clicked.connect(lambda: self.show_profile(user))
+            if user.get_icon_path() is not "":
+                pic = QLabel()
+                pic.setPixmap(QPixmap(user.get_icon_path()))
+                box_layout.addWidget(pic)
             box_layout.addWidget(login_label)
             box_layout.addWidget(button)
             myform.addRow(box_layout)
@@ -129,6 +134,10 @@ class MainWindow(FilmwebWindow):
             button.clicked.connect(lambda: self.rateMovie(movie,avg_rate_label,RateDialog.get_rate(self)))
             details_button = QPushButton("&Details", self)
             details_button.clicked.connect(lambda: DetailsDialog.get_movie_details(movie,self))
+            if movie.get_icon_path() is not "":
+                pic = QLabel()
+                pic.setPixmap(QPixmap(movie.get_icon_path()))
+                box_layout.addWidget(pic)
             box_layout.addWidget(title_label)
             box_layout.addWidget(avg_rate_label)
             box_layout.addWidget(details_button)
@@ -161,6 +170,10 @@ class MainWindow(FilmwebWindow):
             button.clicked.connect(lambda: self.rateMovie(movie,avg_rate_label,RateDialog.get_rate(self)))
             details_button = QPushButton("&Details", self)
             details_button.clicked.connect(lambda: DetailsDialog.get_movie_details(movie,self))
+            if movie.get_icon_path() is not "":
+                pic = QLabel()
+                pic.setPixmap(QPixmap(movie.get_icon_path()))
+                box_layout.addWidget(pic)
             box_layout.addWidget(title_label)
             box_layout.addWidget(avg_rate_label)
             box_layout.addWidget(details_button)
