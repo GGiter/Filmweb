@@ -52,11 +52,11 @@ class RateDialog(QDialog):
         self.setWindowTitle('Rate')
 
 
-    def setRate(self,value):
+    def set_rate(self,value):
         self.rate = value
 
     @staticmethod
-    def getRate(parent=None):
+    def get_rate(parent=None):
         dialog = RateDialog(parent)
         dialog.exec_()
         rate = dialog.rate

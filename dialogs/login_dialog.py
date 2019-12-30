@@ -36,17 +36,17 @@ class LoginDialog(QDialog):
         self.setModal(True)
         self.setWindowTitle('Login')
 
-    def getLoginAndPassword(self):
+    def get_login_and_password(self):
         return (self.login.text().strip(),
                 self.password.text().strip())
 
     # static method, creates dialog and returns (login, password, ok)
     @staticmethod
-    def getLoginPassword(parent=None):
+    def get_login_password(parent=None):
         dialog = LoginDialog(parent)
         dialog.login.setFocus()
         ok = dialog.exec_()
-        login, password = dialog.getLoginAndPassword()
+        login, password = dialog.get_login_and_password()
         return (login, password, ok == QDialog.Accepted)
 
 
@@ -93,7 +93,7 @@ class RegisterDialog(QDialog):
 
     # static method, creates dialog and returns (login,email, password, ok)
     @staticmethod
-    def getLoginPassword(parent=None):
+    def get_login_password(parent=None):
         dialog = RegisterDialog(parent)
         dialog.login.setFocus()
         ok = dialog.exec_()
