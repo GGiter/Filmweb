@@ -1,26 +1,24 @@
 from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout , QStackedLayout
 from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox , QScrollArea , QGroupBox , QFormLayout 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-
+from filmweb_window import FilmwebWindow
 from dialogs.login_dialog import LoginDialog , RegisterDialog
 from dialogs.rate_dialog import RateDialog
 from database import Database
 from dialogs.app_instance import AppInstance
 from dialogs.details_dialog import DetailsDialog
-from profile import QProfileLayout
 import os
 
 
 
-class MainWindow(QWidget):
-    def __init__(self, parent = None):
+class MainWindow(FilmwebWindow):
+    def __init__(self, switch_window, parent = None):
         super().__init__(parent)
+        self.switch_window = switch_window
         self.interface()
     
     
     def interface(self):
-        self.main_layout = QStackedLayout()
         self.layout = QGridLayout()
 
         self.show_latest()
@@ -31,6 +29,8 @@ class MainWindow(QWidget):
         latestBtn.clicked.connect(self.show_latest)
         recommendationsBtn = QPushButton("&Recommendations",self)
         recommendationsBtn.clicked.connect(self.show_recommendations)
+        add_movieBtn = QPushButton("&Add movie",self)
+        add_movieBtn.clicked.connect(self.add_movie)
 
         layoutH = QHBoxLayout()
         self.layoutUserH = QHBoxLayout()
@@ -58,22 +58,22 @@ class MainWindow(QWidget):
         layoutMovieH.addWidget(latestBtn)
         layoutMovieH.addWidget(recommendationsBtn)
         layoutMovieH.addStretch()
+        layoutMovieH.addWidget(add_movieBtn)
 
         self.layout.addLayout(self.layoutUserH,0,0)
         self.layout.addLayout(layoutMovieH,1,0)
         self.layout.addLayout(layoutH,3,0)
         self.setLayout(self.layout)
 
-        self.setGeometry(100,100,500,350)
-        self.setWindowIcon(QIcon(os.path.dirname(os.path.realpath(__file__)) + '/movie.png'))
-        self.setWindowTitle('Filmweb')
-
         self.set_is_logged(None)
 
         self.show()
 
+    def add_movie(self):
+        pass
+
     def show_profile(self):
-        self.setLayout(QProfileLayout())
+        self.switch_window("Profile")
 
     def show_latest(self):
         mygroupbox = QGroupBox()
@@ -143,21 +143,6 @@ class MainWindow(QWidget):
         movie.rate(value,AppInstance.current_user)
         label.setText(str(movie.get_avg_rate()))
 
-    def closeEvent(self, event):
-
-        answer = QMessageBox.question(self, 'Warning',"Do you really want to leave?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-    
-        if answer == QMessageBox.Yes:
-            event.accept()
-        else:
-            event.ignore()
-
-    
-    def keyPressEvent(self, e):
-        if e.key() == Qt.Key_Escape:
-            self.close()
-
-
     def login(self):
         login, password, ok = LoginDialog.get_login_password(self)
         if not ok:
@@ -216,10 +201,3 @@ class MainWindow(QWidget):
             self.userLabel.hide()
             self.profileBtn.hide()
 
-if __name__ == '__main__':
-    import sys
-
-    app = QApplication(sys.argv)
-    AppInstance.db = Database('filmweb.db')
-    main_window = MainWindow()
-    sys.exit(app.exec_())
