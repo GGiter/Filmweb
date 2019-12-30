@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication , QWidget , QMessageBox , qApp
 import os
 from movie import Movie
 from user import User
+from review import Review
 
 class Database:
    def __init__(self, name):
@@ -31,7 +32,7 @@ class Database:
       query.exec_("CREATE TABLE user(id INTEGER PRIMARY KEY AUTOINCREMENT, "
          "login varchar(20), email varchar(20), password varchar(20))")
 
-      query.exec_("CREATE TABLE reviews(player_id INTEGER, "
+      query.exec_("CREATE TABLE reviews(id INTEGER PRIMARY KEY AUTOINCREMENT,player_id INTEGER, "
          "movie_id INTEGER, score INTEGER)")
 
 
@@ -39,7 +40,7 @@ class Database:
 
    def get_field(self,table_name,field_name,id):
       query = QtSql.QSqlQuery()
-      query.exec_(f"SELECT {field_name} FROM {table_name} WHERE id = '1'")
+      query.exec_(f"SELECT {field_name} FROM {table_name} WHERE id = '{id}'")
       query.next()
 
       return str(query.value(0))
@@ -88,12 +89,26 @@ class Database:
       
       return movies
 
+   def get_user_reviews(self,user):
+      query = QtSql.QSqlQuery()
+
+      query.exec_(f"SELECT * FROM reviews")
+      reviews = []
+      while query.next():
+         reviews.append(Review(query.record().value("player_id"),query.record().value("movie_id"),
+         query.record().value("score")
+         ))
+
+      return reviews
+
    def insert_initial_data(self):
       query = QtSql.QSqlQuery()
          
       query.exec_("INSERT INTO movies (id,title,director,description,actors,genre) VALUES (1,'Show', 'Alfred','Lorem lorem','Pip brad','action')")
 
       query.exec_("INSERT INTO user (id,login,email,password) VALUES (1,'Bob', 'ross@net.com' ,'Ross')")
+
+      query.exec_("INSERT INTO reviews (id,player_id,movie_id,score) VALUES (1,1,1,5)")
 
    def add_movie(self,movie):
       query = QtSql.QSqlQuery()

@@ -20,10 +20,11 @@ class WidgetManager(FilmwebWindow,QMainWindow):
         self.switch_window("Main Window")
        
 
-    def switch_window(self,window_name):
+    def switch_window(self,window_name,**kwargs):
         if window_name == "Main Window":
             self.stacked_layout.setCurrentIndex(0)
-        else:
+        elif 'user' in kwargs:
+            self.profile_window.set_user(kwargs['user'])
             self.stacked_layout.setCurrentIndex(1)
 
 if __name__ == '__main__':

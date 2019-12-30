@@ -112,7 +112,7 @@ class MainWindow(FilmwebWindow):
             'Information:','Added movie succesfully!', QMessageBox.Ok)
 
     def show_profile(self,user):
-        self.switch_window("Profile")
+        self.switch_window("Profile",user = user)
 
     def show_latest(self):
         mygroupbox = QGroupBox()
