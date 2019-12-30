@@ -1,13 +1,14 @@
-from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout
+from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout , QStackedLayout
 from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox , QScrollArea , QGroupBox , QFormLayout 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 
-from dialogs.login_dialog import LoginDialog
+from dialogs.login_dialog import LoginDialog , RegisterDialog
 from dialogs.rate_dialog import RateDialog
 from database import Database
 from dialogs.app_instance import AppInstance
 from dialogs.details_dialog import DetailsDialog
+from profile import QProfileLayout
 import os
 
 
@@ -17,12 +18,10 @@ class MainWindow(QWidget):
         super().__init__(parent)
         self.interface()
     
+    
     def interface(self):
-
-        label1 = QLabel('New movies:', self)
-
+        self.main_layout = QStackedLayout()
         self.layout = QGridLayout()
-        self.layout.addWidget(label1,1,0)
 
         self.show_latest()
 
@@ -34,38 +33,47 @@ class MainWindow(QWidget):
         recommendationsBtn.clicked.connect(self.show_recommendations)
 
         layoutH = QHBoxLayout()
-        layoutUserH = QHBoxLayout()
+        self.layoutUserH = QHBoxLayout()
 
-        profileBtn = QPushButton("&Profile",self)
-        userLabel =QLabel("User")
-        layoutUserH.addWidget(profileBtn)
-        layoutUserH.addWidget(userLabel)
+        self.profileBtn = QPushButton("&Profile",self)
+        self.profileBtn.clicked.connect(self.show_profile)
+        self.userLabel = QLabel("User")
+        self.layoutUserH.addStretch()
+        self.layoutUserH.addWidget(self.userLabel)
+        self.layoutUserH.addWidget(self.profileBtn)
+        
 
         self.loginBtn = QPushButton("&Login", self)
         self.loginBtn.clicked.connect(self.login)
         self.registerBtn = QPushButton("&Register", self)
         self.registerBtn.clicked.connect(self.register)
         self.logoutBtn = QPushButton("&Logout",self)
-        self.logoutBtn.hide()
         self.logoutBtn.clicked.connect(self.logout)
 
+        layoutH.addStretch()
         layoutH.addWidget(self.loginBtn)
         layoutH.addWidget(self.registerBtn)
         layoutH.addWidget(self.logoutBtn)
 
         layoutMovieH.addWidget(latestBtn)
         layoutMovieH.addWidget(recommendationsBtn)
+        layoutMovieH.addStretch()
 
-        self.layout.addLayout(layoutUserH,0,0,1,5)
-        self.layout.addLayout(layoutMovieH,0,0,1,5)
-        self.layout.addLayout(layoutH,2,0,1,5)
-
+        self.layout.addLayout(self.layoutUserH,0,0)
+        self.layout.addLayout(layoutMovieH,1,0)
+        self.layout.addLayout(layoutH,3,0)
         self.setLayout(self.layout)
 
-        self.setGeometry(20,20,500,500)
+        self.setGeometry(100,100,500,350)
         self.setWindowIcon(QIcon(os.path.dirname(os.path.realpath(__file__)) + '/movie.png'))
         self.setWindowTitle('Filmweb')
+
+        self.set_is_logged(None)
+
         self.show()
+
+    def show_profile(self):
+        self.setLayout(QProfileLayout())
 
     def show_latest(self):
         mygroupbox = QGroupBox()
@@ -97,7 +105,7 @@ class MainWindow(QWidget):
         scroll.setFixedHeight(200)
         box_layout = QHBoxLayout()
         box_layout.addWidget(scroll)
-        self.layout.addLayout(box_layout,1,1)
+        self.layout.addLayout(box_layout,2,0)
 
     def show_recommendations(self):
         mygroupbox = QGroupBox()
@@ -106,7 +114,7 @@ class MainWindow(QWidget):
         title_labels = []
         buttons = []
 
-        for movie in sorted(AppInstance.db.getMovies(), key = lambda movie: movie.get_avg_rate()):
+        for movie in sorted(AppInstance.db.get_movies(), key = lambda movie: movie.get_avg_rate()):
             box_layout = QHBoxLayout()
             title_label = QLabel(movie.get_title())
             avg_rate_label = QLabel(str(movie.get_avg_rate()))
@@ -129,7 +137,7 @@ class MainWindow(QWidget):
         scroll.setFixedHeight(200)
         box_layout = QHBoxLayout()
         box_layout.addWidget(scroll)
-        self.layout.addLayout(box_layout)
+        self.layout.addLayout(box_layout,2,0)
 
     def rateMovie(self,movie,label,value):
         movie.rate(value,AppInstance.current_user)
@@ -197,11 +205,16 @@ class MainWindow(QWidget):
             self.loginBtn.hide()
             self.registerBtn.hide()
             self.logoutBtn.show()
+            self.userLabel.setText(user.get_login())
+            self.userLabel.show()
+            self.profileBtn.show()
         else:
             AppInstance.current_user = None
             self.loginBtn.show()
             self.registerBtn.show()
             self.logoutBtn.hide()
+            self.userLabel.hide()
+            self.profileBtn.hide()
 
 if __name__ == '__main__':
     import sys
