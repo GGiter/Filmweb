@@ -161,19 +161,23 @@ class Database:
 
 
    def rate_movie(self,user,movie,score):
-      query = QtSql.QSqlQuery()
-
-      query.exec_(f"SELECT * FROM reviews WHERE player_id = {user.get_id()} AND player_id = {movie.get_id()}")
-
-      if query.value(0) is None : 
-         query.exec_(f"UPDATE reviews SET score = {score} WHERE player_id = {user.get_id()} AND player_id = {movie.get_id()}")
-      else:
-         query.exec_(f"INSERT INTO reviews (player_id,movie_id,score) VALUES ({user.get_id()},{movie.get_id()},{score})")
-
+      self.add_review(user.get_id(),movie.get_id(),score)
+ 
       reviews = self.get_movie_reviews(movie)
       scores = [review.get_score() for review in reviews]
       if len(reviews) > 0 :
             movie.set_avg_rate(int(sum(scores)/len(reviews)),len(reviews))
+
+   def add_review(self,user_id,movie_id,score):
+      query = QtSql.QSqlQuery()
+
+      query.exec_(f"SELECT * FROM reviews WHERE player_id = {user_id} AND player_id = {movie_id}")
+
+      if query.isValid() is True : 
+         query.exec_(f"UPDATE reviews SET score = {score} WHERE player_id = {user_id} AND player_id = {movie_id}")
+      else:
+         query.exec_(f"INSERT INTO reviews (player_id,movie_id,score) VALUES ({user_id},{movie_id},{score})")
+
 
       
       
