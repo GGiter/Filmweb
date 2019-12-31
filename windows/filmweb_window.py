@@ -9,7 +9,7 @@ class FilmwebWindow(QWidget):
     def __init__(self, parent = None):
         super().__init__(parent)
         self.setGeometry(100,100,500,350)
-        self.setFixedSize(500,300)
+        self.setFixedSize(500,350)
         self.setWindowIcon(QIcon(os.path.dirname(sys.argv[0]) + '/images/movie.png'))
         self.setWindowTitle('Filmweb')
 

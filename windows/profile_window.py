@@ -5,6 +5,8 @@ from windows.filmweb_window import FilmwebWindow
 from data_objects.user import User
 from data_objects.review import Review
 from dialogs.app_instance import AppInstance
+import os
+import sys
 
 class ProfileWindow(FilmwebWindow):
     def __init__(self, switch_window, parent = None):
@@ -38,10 +40,13 @@ class ProfileWindow(FilmwebWindow):
             movie_label = QLabel(AppInstance.db.get_field("movies","title",review.get_movie_id()))
             director_label = QLabel(AppInstance.db.get_field("movies","director",review.get_movie_id()))
             score_label = QLabel(str(review.get_score()))
-            if AppInstance.db.get_field("movies","icon_path",review.get_movie_id()) is not "":
-                pic = QLabel()
-                pic.setPixmap(QPixmap(AppInstance.db.get_field("movies","icon_path",review.get_movie_id())))
-                box_layout.addWidget(pic)
+            if AppInstance.db.get_field("movies","icon_path",review.get_movie_id()) is not None and len(AppInstance.db.get_field("movies","icon_path",review.get_movie_id())) is not 0:
+                pixmap = QPixmap(AppInstance.db.get_field("movies","icon_path",review.get_movie_id())).scaled(20,20)  
+            else:
+                pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/images/user.png').scaled(20,20)
+            pic = QLabel()
+            pic.setPixmap(pixmap)
+            box_layout.addWidget(pic)
             box_layout.addWidget(movie_label)
             box_layout.addWidget(director_label)
             box_layout.addWidget(score_label)

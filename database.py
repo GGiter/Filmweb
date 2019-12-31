@@ -43,6 +43,9 @@ class Database:
       query.exec_(f"SELECT {field_name} FROM {table_name} WHERE id = '{id}'")
       query.next()
 
+      if query.isValid() is False:
+         return None
+
       return str(query.value(0))
 
 
@@ -92,6 +95,25 @@ class Database:
          scores = [review.get_score() for review in reviews]
          if len(reviews) > 0 :
             movie.set_avg_rate(int(sum(scores)/len(reviews)),len(reviews))
+ 
+      
+      return movies
+
+   def get_movies_by_key(self,key,value):
+      query = QtSql.QSqlQuery()
+
+      if key is not "actors":
+         query.exec_(f"SELECT * FROM movies WHERE {key} LIKE '{value}%'")
+      else:
+         query.exec_(f"SELECT * FROM movies WHERE {key} LIKE '%{value}%'")
+      movies = []
+      while query.next():
+         movie = Movie(query.record().value("title"),query.record().value("director"),
+         query.record().value("description"),query.record().value("duration"),query.record().value("actors"),query.record().value("genre"),query.record().value("icon_path")
+         ,query.record().value("id")
+         )
+         movies.append(movie)
+
  
       
       return movies
@@ -147,6 +169,11 @@ class Database:
          query.exec_(f"UPDATE reviews SET score = {score} WHERE player_id = {user.get_id()} AND player_id = {movie.get_id()}")
       else:
          query.exec_(f"INSERT INTO reviews (player_id,movie_id,score) VALUES ({user.get_id()},{movie.get_id()},{score})")
+
+      reviews = self.get_movie_reviews(movie)
+      scores = [review.get_score() for review in reviews]
+      if len(reviews) > 0 :
+            movie.set_avg_rate(int(sum(scores)/len(reviews)),len(reviews))
 
       
       

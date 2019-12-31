@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout , QStackedLayout
-from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox , QScrollArea , QGroupBox , QFormLayout 
+from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox , QScrollArea , QGroupBox , QFormLayout , QRadioButton
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import QIcon ,QPixmap
 from windows.filmweb_window import FilmwebWindow
@@ -10,7 +10,7 @@ from database import Database
 from dialogs.app_instance import AppInstance
 from dialogs.details_dialog import DetailsDialog
 import os
-
+import sys
 
 
 class MainWindow(FilmwebWindow):
@@ -39,9 +39,26 @@ class MainWindow(FilmwebWindow):
         layoutH = QHBoxLayout()
         self.layoutUserH = QHBoxLayout()
 
+
+        self.search_line = QLineEdit()
+        self.search_line.editingFinished.connect(self.search)
+        search_keys_layout = QHBoxLayout()
+        radio_buttons = []
+        for key in ["title","director","actors"]:
+            radio_button = QRadioButton(key)
+            radio_button.setChecked(False)
+            radio_button.clicked.connect(lambda : self.set_search_key(key))
+            search_keys_layout.addWidget(radio_button)
+            radio_buttons.append(radio_button)
+
+        search_keys_layout.addStretch()
+        radio_buttons[0].setChecked(True)    
+        self.set_search_key("title")
+
         self.profileBtn = QPushButton("&Profile",self)
         self.profileBtn.clicked.connect(lambda: self.show_profile(AppInstance.current_user))
         self.userLabel = QLabel("User")
+        self.layoutUserH.addWidget(self.search_line)
         self.layoutUserH.addStretch()
         self.layoutUserH.addWidget(self.userLabel)
         self.layoutUserH.addWidget(self.profileBtn)
@@ -66,14 +83,72 @@ class MainWindow(FilmwebWindow):
         layoutMovieH.addWidget(add_movieBtn)
 
         self.layout.addLayout(self.layoutUserH,0,0)
-        self.layout.addLayout(layoutMovieH,1,0)
-        self.layout.addLayout(layoutH,3,0)
+        self.layout.addLayout(search_keys_layout,1,0)
+        self.layout.addLayout(layoutMovieH,2,0)
+        self.layout.addLayout(layoutH,4,0)
         self.setLayout(self.layout)
 
         self.set_is_logged(None)
 
         self.show()
+    
+    def show_movies(self,**kwargs):
+        mygroupbox = QGroupBox()
+        myform = QFormLayout()
 
+        title_labels = []
+        buttons = []
+        movies = []
+        if "key" in kwargs and "value" in kwargs:
+            movies = AppInstance.db.get_movies_by_key(self.search_key,self.search_line.text().strip())
+        elif "sort" in kwargs:
+            movies = sorted(AppInstance.db.get_movies(), key = lambda movie: movie.get_avg_rate(),reverse = True)
+        else:
+            movies = AppInstance.db.get_movies()
+
+        for movie in movies:
+            box_layout = QHBoxLayout()
+            title_label = QLabel(movie.get_title())
+            avg_rate_label = QLabel(str(movie.get_avg_rate()))
+            button = QPushButton("&Rate", self)
+            button.clicked.connect(lambda: self.rateMovie(movie,avg_rate_label,RateDialog.get_rate(self)))
+            details_button = QPushButton("&Details", self)
+            details_button.clicked.connect(lambda: DetailsDialog.get_movie_details(movie,self))
+            if movie.get_icon_path() is not None and len(movie.get_icon_path()) is not 0:
+                pixmap = QPixmap(movie.get_icon_path()).scaled(20,20)  
+            else:
+                pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/images/movie.png').scaled(20,20)
+            pic = QLabel()
+            pic.setPixmap(pixmap)
+            box_layout.addWidget(pic)
+                
+            box_layout.addWidget(title_label)
+            box_layout.addWidget(avg_rate_label)
+            box_layout.addWidget(details_button)
+            box_layout.addWidget(button)
+            myform.addRow(box_layout)
+            title_labels.append(title_label)    
+            buttons.append(button)
+        
+        mygroupbox.setLayout(myform)
+        scroll = QScrollArea()
+        scroll.setWidget(mygroupbox)
+        scroll.setWidgetResizable(True) 
+        scroll.setFixedHeight(200)
+        box_layout = QHBoxLayout()
+        box_layout.addWidget(scroll)
+        self.layout.addLayout(box_layout,3,0)
+
+    def set_search_key(self,key):
+        self.search_key = key
+        self.search()
+
+    def search(self):
+        if self.search_line.text().strip() is not "":
+            self.show_movies(key = self.search_key , value = self.search_line.text().strip())
+        else:
+            self.show_movies()
+   
     def show_users(self):
         mygroupbox = QGroupBox()
         myform = QFormLayout()
@@ -83,10 +158,13 @@ class MainWindow(FilmwebWindow):
             login_label = QLabel(user.get_login())
             button = QPushButton("&Profile", self)
             button.clicked.connect(lambda: self.show_profile(user))
-            if user.get_icon_path() is not "":
-                pic = QLabel()
-                pic.setPixmap(QPixmap(user.get_icon_path()))
-                box_layout.addWidget(pic)
+            if user.get_icon_path() is not None and len(user.get_icon_path()) is not 0:
+                pixmap = QPixmap(user.get_icon_path()).scaled(20,20)  
+            else:
+                pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/images/user.png').scaled(20,20)
+            pic = QLabel()
+            pic.setPixmap(pixmap)
+            box_layout.addWidget(pic)
             box_layout.addWidget(login_label)
             box_layout.addWidget(button)
             myform.addRow(box_layout)
@@ -99,7 +177,7 @@ class MainWindow(FilmwebWindow):
         scroll.setFixedHeight(200)
         box_layout = QHBoxLayout()
         box_layout.addWidget(scroll)
-        self.layout.addLayout(box_layout,2,0)
+        self.layout.addLayout(box_layout,3,0)
 
     def add_movie(self):
         movie, ok = AddMovieDialog.get_movie_details(self)
@@ -120,82 +198,15 @@ class MainWindow(FilmwebWindow):
         self.switch_window("Profile",user = user)
 
     def show_latest(self):
-        mygroupbox = QGroupBox()
-        myform = QFormLayout()
-
-        title_labels = []
-        buttons = []
-
-        for movie in AppInstance.db.get_movies():
-            box_layout = QHBoxLayout()
-            title_label = QLabel(movie.get_title())
-            avg_rate_label = QLabel(str(movie.get_avg_rate()))
-            button = QPushButton("&Rate", self)
-            button.clicked.connect(lambda: self.rateMovie(movie,avg_rate_label,RateDialog.get_rate(self)))
-            details_button = QPushButton("&Details", self)
-            details_button.clicked.connect(lambda: DetailsDialog.get_movie_details(movie,self))
-            if movie.get_icon_path() is not "":
-                pic = QLabel()
-                pic.setPixmap(QPixmap(movie.get_icon_path()))
-                box_layout.addWidget(pic)
-            box_layout.addWidget(title_label)
-            box_layout.addWidget(avg_rate_label)
-            box_layout.addWidget(details_button)
-            box_layout.addWidget(button)
-            myform.addRow(box_layout)
-            title_labels.append(title_label)    
-            buttons.append(button)
-        
-        mygroupbox.setLayout(myform)
-        scroll = QScrollArea()
-        scroll.setWidget(mygroupbox)
-        scroll.setWidgetResizable(True) 
-        scroll.setFixedHeight(200)
-        box_layout = QHBoxLayout()
-        box_layout.addWidget(scroll)
-        self.layout.addLayout(box_layout,2,0)
+        self.show_movies()
 
     def show_recommendations(self):
-        mygroupbox = QGroupBox()
-        myform = QFormLayout()
-
-        title_labels = []
-        buttons = []
-
-        for movie in sorted(AppInstance.db.get_movies(), key = lambda movie: movie.get_avg_rate(),reverse = True):
-            box_layout = QHBoxLayout()
-            title_label = QLabel(movie.get_title())
-            avg_rate_label = QLabel(str(movie.get_avg_rate()))
-            button = QPushButton("&Rate", self)
-            button.clicked.connect(lambda: self.rateMovie(movie,avg_rate_label,RateDialog.get_rate(self)))
-            details_button = QPushButton("&Details", self)
-            details_button.clicked.connect(lambda: DetailsDialog.get_movie_details(movie,self))
-            if movie.get_icon_path() is not "":
-                pic = QLabel()
-                pic.setPixmap(QPixmap(movie.get_icon_path()))
-                box_layout.addWidget(pic)
-            box_layout.addWidget(title_label)
-            box_layout.addWidget(avg_rate_label)
-            box_layout.addWidget(details_button)
-            box_layout.addWidget(button)
-            myform.addRow(box_layout)
-            title_labels.append(title_label)    
-            buttons.append(button)
-        
-        mygroupbox.setLayout(myform)
-        scroll = QScrollArea()
-        scroll.setWidget(mygroupbox)
-        scroll.setWidgetResizable(True) 
-        scroll.setFixedHeight(200)
-        box_layout = QHBoxLayout()
-        box_layout.addWidget(scroll)
-        self.layout.addLayout(box_layout,2,0)
+        self.show_movies(sort = True)
 
     def rateMovie(self,movie,label,value):
-        movie.rate(value,AppInstance.current_user)
-        label.setText(str(movie.get_avg_rate()))
         if AppInstance.current_user:
             AppInstance.db.rate_movie(AppInstance.current_user,movie,value)
+            label.setText(str(movie.get_avg_rate()))
 
     def login(self):
         login, password, ok = LoginDialog.get_login_password(self)

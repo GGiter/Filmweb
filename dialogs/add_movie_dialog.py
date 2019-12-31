@@ -27,7 +27,7 @@ class AddMovieDialog(QDialog):
         
     def show_fields(self):
         self.line_edits = []
-        for field in ["title","director","description","actors","genre"]:
+        for field in ["title","director","description","duration","actors","genre"]:
             box_layout = QHBoxLayout()
             label = QLabel(field)
             line_edit = QLineEdit()
