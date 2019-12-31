@@ -3,12 +3,12 @@ from data_objects.user import User
 class Movie :
     def __init__(self,title,director,description,duration,actors,genre,icon_path = None,id = None):
         self.id = id
-        self.title = title
-        self.director = director
-        self.description = description
-        self.duration = duration
-        self.actors = actors
-        self.genre = genre
+        self.title = title if isinstance(title,str) else ""
+        self.director = director if isinstance(director,str) else ""
+        self.description = description if isinstance(description,str) else ""
+        self.duration = duration if isinstance(duration,int) else 0
+        self.actors = actors if isinstance(actors,str) else ""
+        self.genre = genre if isinstance(genre,str) else ""
         self.icon_path = icon_path
         self.avg_rate = 0 
         self.number_of_users = 0
@@ -41,6 +41,9 @@ class Movie :
 
     def get_description(self):
         return self.description
+
+    def get_duration(self):
+        return self.duration
 
     def get_actors(self):
         return self.actors

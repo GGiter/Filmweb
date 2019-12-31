@@ -2,9 +2,9 @@
 
 class User :
     def __init__(self,login,email,password,icon_path = None , id = None):
-        self.login = login
-        self.email = email
-        self.password = password
+        self.login = login if isinstance(login,str) else ""
+        self.email = email if isinstance(email,str) and email.find("@") != -1 else ""
+        self.password = password if isinstance(password,str) else ""
         self.icon_path = icon_path
         self.id = id
 
