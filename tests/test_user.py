@@ -1,4 +1,4 @@
-from database import Database
+from data.database import Database
 from data_objects.user import User
 
 def test_login():

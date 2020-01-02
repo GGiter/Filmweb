@@ -100,7 +100,7 @@ class MainWindow(FilmwebWindow):
         buttons = []
         movies = []
         if "key" in kwargs and "value" in kwargs:
-            movies = AppInstance.db.get_movies_by_key(self.search_key,self.search_line.text().strip())
+            movies = AppInstance.db.get_movies_by_parameter(self.search_key,self.search_line.text().strip())
         elif "sort" in kwargs:
             movies = sorted(AppInstance.db.get_movies(), key = lambda movie: movie.get_avg_rate(),reverse = True)
         else:

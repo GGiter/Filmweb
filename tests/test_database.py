@@ -1,4 +1,4 @@
-from database import Database
+from data.database import Database
 from data_objects.movie import Movie
 
 def test_add_movie():
