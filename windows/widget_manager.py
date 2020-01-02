@@ -4,7 +4,7 @@ from windows.profile_window import ProfileWindow
 from PyQt5.QtCore import Qt 
 from windows.filmweb_window import FilmwebWindow
 from dialogs.app_instance import AppInstance
-from database import Database
+from data.database import Database
 import os
 
 class WidgetManager(FilmwebWindow,QMainWindow):

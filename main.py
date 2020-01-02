@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication , QWidget,QStyleFactory 
 from dialogs.app_instance import AppInstance
 from windows.widget_manager import WidgetManager
-from database import Database
+from data.database import Database
 
 if __name__ == '__main__':
     import sys

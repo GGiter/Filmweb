@@ -10,7 +10,7 @@ class FilmwebWindow(QWidget):
         super().__init__(parent)
         self.setGeometry(100,100,500,350)
         self.setFixedSize(500,350)
-        self.setWindowIcon(QIcon(os.path.dirname(sys.argv[0]) + '/images/movie.png'))
+        self.setWindowIcon(QIcon(os.path.dirname(sys.argv[0]) + '/icons/movie.png'))
         self.setWindowTitle('Filmweb')
 
     def closeEvent(self, event):

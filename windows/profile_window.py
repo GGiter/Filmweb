@@ -34,7 +34,7 @@ class ProfileWindow(FilmwebWindow):
             if AppInstance.db.get_field("movies","icon_path",review.get_movie_id()) != 'None':
                 pixmap = QPixmap(AppInstance.db.get_field("movies","icon_path",review.get_movie_id())).scaled(20,20)  
             else:
-                pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/images/user.png').scaled(20,20)
+                pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/icons/user.png').scaled(20,20)
             pic = QLabel()
             pic.setPixmap(pixmap)
             box_layout.addWidget(pic)

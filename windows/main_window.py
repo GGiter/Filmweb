@@ -6,7 +6,7 @@ from windows.filmweb_window import FilmwebWindow
 from dialogs.login_dialog import LoginDialog , RegisterDialog
 from dialogs.rate_dialog import RateDialog
 from dialogs.add_movie_dialog import AddMovieDialog
-from database import Database
+from data.database import Database
 from dialogs.app_instance import AppInstance
 from dialogs.details_dialog import DetailsDialog
 from data_objects.user import User
@@ -117,7 +117,7 @@ class MainWindow(FilmwebWindow):
             if  movie.get_icon_path() != 'None':
                 pixmap = QPixmap(movie.get_icon_path()).scaled(20,20) 
             else:
-                pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/images/movie.png').scaled(20,20)
+                pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/icons/movie.png').scaled(20,20)
             pic = QLabel()
             pic.setPixmap(pixmap)
             box_layout.addWidget(pic)
@@ -162,7 +162,7 @@ class MainWindow(FilmwebWindow):
             if user.get_icon_path() != 'None':
                 pixmap = QPixmap(user.get_icon_path()).scaled(20,20)  
             else:
-                pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/images/user.png').scaled(20,20)
+                pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/icons/user.png').scaled(20,20)
             pic = QLabel()
             pic.setPixmap(pixmap)
             box_layout.addWidget(pic)
