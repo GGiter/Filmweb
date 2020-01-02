@@ -3,8 +3,9 @@ from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QLabel, QLineEdit , QRadioButton ,QVBoxLayout
 from PyQt5.QtWidgets import QGridLayout
 from app_instance import AppInstance
+from dialogs.filmweb_dialog import FilmwebDialog
 
-class DetailsDialog(QDialog):
+class DetailsDialog(FilmwebDialog):
     """
     Dialog window that hosts informations about given movie
     """

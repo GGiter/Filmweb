@@ -2,9 +2,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QLabel, QLineEdit , QRadioButton ,QHBoxLayout
 from PyQt5.QtWidgets import QGridLayout
+from dialogs.filmweb_dialog import FilmwebDialog
 
-
-class RateDialog(QDialog):
+class RateDialog(FilmwebDialog):
     """
     Rate dialog window
     """

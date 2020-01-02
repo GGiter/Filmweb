@@ -2,10 +2,10 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QLabel, QLineEdit
 from PyQt5.QtWidgets import QGridLayout
-
+from dialogs.filmweb_dialog import FilmwebDialog
 
 # to do add validation for register
-class LoginDialog(QDialog):
+class LoginDialog(FilmwebDialog):
     """ Login dialog window """
 
     def __init__(self, parent=None):
@@ -55,7 +55,7 @@ class LoginDialog(QDialog):
 
 
 
-class RegisterDialog(QDialog):
+class RegisterDialog(FilmwebDialog):
     """ Register dialog window """
 
     def __init__(self, parent=None):

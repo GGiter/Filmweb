@@ -3,8 +3,9 @@ from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QLabel, QLineEdit , QRadioButton ,QVBoxLayout ,QHBoxLayout
 from PyQt5.QtWidgets import QGridLayout
 from data_objects.movie import Movie
+from dialogs.filmweb_dialog import FilmwebDialog
 
-class AddMovieDialog(QDialog):
+class AddMovieDialog(FilmwebDialog):
     def __init__(self, movie, parent=None):
         super(AddMovieDialog, self).__init__(parent)
         # widget elements 
