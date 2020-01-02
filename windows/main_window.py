@@ -9,6 +9,7 @@ from dialogs.add_movie_dialog import AddMovieDialog
 from database import Database
 from dialogs.app_instance import AppInstance
 from dialogs.details_dialog import DetailsDialog
+from data_objects.user import User
 import os
 import sys
 
@@ -22,7 +23,6 @@ class MainWindow(FilmwebWindow):
     
     def interface(self):
         self.layout = QGridLayout()
-
         self.show_latest()
 
         layoutMovieH = QHBoxLayout()
@@ -47,7 +47,7 @@ class MainWindow(FilmwebWindow):
         for key in ["title","director","actors"]:
             radio_button = QRadioButton(key)
             radio_button.setChecked(False)
-            radio_button.clicked.connect(lambda : self.set_search_key(key))
+            radio_button.clicked.connect(lambda state , x = key: self.set_search_key(x))
             search_keys_layout.addWidget(radio_button)
             radio_buttons.append(radio_button)
 
@@ -111,11 +111,11 @@ class MainWindow(FilmwebWindow):
             title_label = QLabel(movie.get_title())
             avg_rate_label = QLabel(str(movie.get_avg_rate()))
             button = QPushButton("&Rate", self)
-            button.clicked.connect(lambda: self.rateMovie(movie,avg_rate_label,RateDialog.get_rate(self)))
+            button.clicked.connect(lambda state , x = movie , label = avg_rate_label: self.rate_movie(x,label,RateDialog.get_rate(self)))
             details_button = QPushButton("&Details", self)
-            details_button.clicked.connect(lambda: DetailsDialog.get_movie_details(movie,self))
-            if movie.get_icon_path() is not None and len(movie.get_icon_path()) is not 0:
-                pixmap = QPixmap(movie.get_icon_path()).scaled(20,20)  
+            details_button.clicked.connect(lambda state , x = movie : DetailsDialog.get_movie_details(x,self))
+            if  movie.get_icon_path() != 'None':
+                pixmap = QPixmap(movie.get_icon_path()).scaled(20,20) 
             else:
                 pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/images/movie.png').scaled(20,20)
             pic = QLabel()
@@ -141,7 +141,8 @@ class MainWindow(FilmwebWindow):
 
     def set_search_key(self,key):
         self.search_key = key
-        self.search()
+        if self.search_line.text().strip() is not "":
+            self.search()
 
     def search(self):
         if self.search_line.text().strip() is not "":
@@ -157,8 +158,8 @@ class MainWindow(FilmwebWindow):
             box_layout = QHBoxLayout()
             login_label = QLabel(user.get_login())
             button = QPushButton("&Profile", self)
-            button.clicked.connect(lambda: self.show_profile(user))
-            if user.get_icon_path() is not None and len(user.get_icon_path()) is not 0:
+            button.clicked.connect(lambda state, x = user: self.show_profile(x))
+            if user.get_icon_path() != 'None':
                 pixmap = QPixmap(user.get_icon_path()).scaled(20,20)  
             else:
                 pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/images/user.png').scaled(20,20)
@@ -189,7 +190,10 @@ class MainWindow(FilmwebWindow):
                                 'Empty movie details', QMessageBox.Ok)
             return
 
-        AppInstance.db.add_movie(movie)
+        if AppInstance.db.add_movie(movie) is False:
+            QMessageBox.warning(self,'Error',
+                                'Invalid movie settings', QMessageBox.Ok)
+            return 
 
         QMessageBox.information(self,
             'Information:','Added movie succesfully!', QMessageBox.Ok)
@@ -203,8 +207,9 @@ class MainWindow(FilmwebWindow):
     def show_recommendations(self):
         self.show_movies(sort = True)
 
-    def rateMovie(self,movie,label,value):
+    def rate_movie(self,movie,label,value):
         if AppInstance.current_user:
+            print(movie.get_title())
             AppInstance.db.rate_movie(AppInstance.current_user,movie,value)
             label.setText(str(movie.get_avg_rate()))
 
@@ -218,7 +223,14 @@ class MainWindow(FilmwebWindow):
                                 'Empty login or password!', QMessageBox.Ok)
             return
 
-        self.set_is_logged(AppInstance.db.login_user(login,password))
+        user = AppInstance.db.login_user(login,password)
+        
+        if user is None:
+            QMessageBox.warning(self, 'Error',
+                                'Invalid login or password!', QMessageBox.Ok)
+            return
+
+        self.set_is_logged(user)
 
         if  AppInstance.current_user is None:
             QMessageBox.warning(self, 'Error',
@@ -238,7 +250,14 @@ class MainWindow(FilmwebWindow):
                                 'Empty login or email or password!', QMessageBox.Ok)
             return
 
-        self.set_is_logged(AppInstance.db.register_user(login,email,password))
+        user = AppInstance.db.register_user(login,email,password)
+
+        if user is None:
+            QMessageBox.warning(self, 'Error',
+                                'Invalid login or email or password!', QMessageBox.Ok)
+            return
+
+        self.set_is_logged(user)
 
         QMessageBox.information(self,
             'Information', 'Registered succesfully !', QMessageBox.Ok)

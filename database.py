@@ -8,8 +8,7 @@ from data_objects.review import Review
 class Database:
    def __init__(self, name):
       self.name = name
-      if self.createDB(name):
-         self.insert_initial_data()
+      self.createDB(name)
 
    def createDB(self,database_name):
       self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
@@ -57,7 +56,7 @@ class Database:
       
       query = QtSql.QSqlQuery()
 
-      query.exec_(f"INSERT INTO users (login,email,password) VALUES ('{login}', '{email}' ,'{password}')")
+      query.exec_(f"INSERT INTO users (login,email,password,icon_path) VALUES ('{login}', '{email}' ,'{password}','None')")
 
       return User(login,email,password,query.record().value("icon_path"),query.record().value("id"))
 
@@ -144,18 +143,6 @@ class Database:
 
       return reviews
 
-   def insert_initial_data(self):
-      query = QtSql.QSqlQuery()
-         
-      query.exec_("INSERT INTO movies (id,title,director,description,duration,actors,genre,icon_path) VALUES (1,'Show', 'Alfred','Lorem lorem',1,'Pip brad','action','')")
-
-      query.exec_("INSERT INTO movies (id,title,director,description,duration,actors,genre,icon_path) VALUES (2,'Escape', 'John','Ipsilum Ipsilum',2,'Bran','mystery','')")
-
-      query.exec_("INSERT INTO users (id,login,email,password) VALUES (1,'Bob', 'ross@net.com' ,'Ross')")
-      
-
-      query.exec_("INSERT INTO reviews (id,player_id,movie_id,score) VALUES (1,1,1,5)")
-
    def add_movie(self,movie):
       query = QtSql.QSqlQuery()
 
@@ -177,7 +164,7 @@ class Database:
 
    def add_review(self,user_id,movie_id,score):
       
-      if self.get_field_by_parameter("user","id","id",user_id) is None or self.get_field_by_parameter("movies","id","id",movie_id) is None or score > 10 or score < 1:
+      if self.get_field_by_parameter("users","id","id",user_id) is None or self.get_field_by_parameter("movies","id","id",movie_id) is None or score > 10 or score < 1:
          return False 
       
       query = QtSql.QSqlQuery()

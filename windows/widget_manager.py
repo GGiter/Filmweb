@@ -14,7 +14,7 @@ class WidgetManager(FilmwebWindow,QMainWindow):
 
         self.main_window = MainWindow(self.switch_window)
         self.stacked_layout.addWidget(self.main_window)
-        self.profile_window = ProfileWindow(self.switch_window)
+        self.profile_window = ProfileWindow(self.switch_window,AppInstance.current_user)
         self.stacked_layout.addWidget(self.profile_window)
 
         self.switch_window("Main Window")

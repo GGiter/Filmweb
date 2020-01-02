@@ -9,23 +9,14 @@ import os
 import sys
 
 class ProfileWindow(FilmwebWindow):
-    def __init__(self, switch_window, parent = None):
+    def __init__(self, switch_window,user, parent = None):
         super().__init__(parent)
         self.switch_window = switch_window
         self.interface()
-        self.user = None
+        self.set_user(user)
 
     def interface(self):
         self.layout = QGridLayout()
-
-        self.backBtn = QPushButton("&Back",self)
-        self.backBtn.clicked.connect(self.show_main_window)
-
-        box_layout = QHBoxLayout()
-        box_layout.addStretch()
-        box_layout.addWidget(self.backBtn)
-        self.layout.addLayout(box_layout,2,0)
-
         self.setLayout(self.layout)
 
     def show_main_window(self):
@@ -40,7 +31,7 @@ class ProfileWindow(FilmwebWindow):
             movie_label = QLabel(AppInstance.db.get_field("movies","title",review.get_movie_id()))
             director_label = QLabel(AppInstance.db.get_field("movies","director",review.get_movie_id()))
             score_label = QLabel(str(review.get_score()))
-            if AppInstance.db.get_field("movies","icon_path",review.get_movie_id()) is not None and len(AppInstance.db.get_field("movies","icon_path",review.get_movie_id())) is not 0:
+            if AppInstance.db.get_field("movies","icon_path",review.get_movie_id()) != 'None':
                 pixmap = QPixmap(AppInstance.db.get_field("movies","icon_path",review.get_movie_id())).scaled(20,20)  
             else:
                 pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/images/user.png').scaled(20,20)
@@ -58,14 +49,35 @@ class ProfileWindow(FilmwebWindow):
         scroll.setWidget(mygroupbox)
         scroll.setWidgetResizable(True) 
         scroll.setFixedHeight(200)
-        box_layout = QHBoxLayout()
-        box_layout.addWidget(scroll)
-        self.layout.addLayout(box_layout,1,0)
+        self.box_layout_scroll = QHBoxLayout()
+        self.box_layout_scroll.addWidget(scroll)
+        self.layout.addLayout(self.box_layout_scroll,1,0)
 
     def set_user(self, user):
         self.user = user
-        self.label = QLabel(user.get_login())
-        box_layout = QHBoxLayout()
-        box_layout.addWidget(self.label)
-        self.layout.addLayout(box_layout,0,0)
-        self.show_reviews()
+        self.delete_items_of_layout(self.layout)
+        if user is not None:
+            self.label = QLabel(self.user.get_login())
+            self.box_layout = QHBoxLayout()
+            self.box_layout.addWidget(self.label)
+            self.layout.addLayout(self.box_layout,0,0)
+            self.backBtn = QPushButton("&Back",self)
+            self.backBtn.clicked.connect(self.show_main_window)
+            box_layout = QHBoxLayout()
+            box_layout.addStretch()
+            box_layout.addWidget(self.backBtn)
+            self.layout.addLayout(box_layout,2,0)
+            
+            self.show_reviews()
+
+    def delete_items_of_layout(self,layout):
+     if layout is not None:
+         while layout.count():
+             item = layout.takeAt(0)
+             widget = item.widget()
+             if widget is not None:
+                 widget.setParent(None)
+             else:
+                 self.delete_items_of_layout(item.layout())
+
+

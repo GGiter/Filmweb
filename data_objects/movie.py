@@ -9,7 +9,7 @@ class Movie :
         self.duration = duration if isinstance(duration,int) else 0
         self.actors = actors if isinstance(actors,str) else ""
         self.genre = genre if isinstance(genre,str) else ""
-        self.icon_path = icon_path
+        self.icon_path = icon_path if isinstance(genre,str) else ""
         self.avg_rate = 0 
         self.number_of_users = 0
 
