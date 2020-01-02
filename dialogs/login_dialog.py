@@ -12,8 +12,8 @@ class LoginDialog(QDialog):
         super(LoginDialog, self).__init__(parent)
 
         # widget elements 
-        loginLb = QLabel('Login')
-        passwordLb = QLabel('Password')
+        login_label = QLabel('Login')
+        password_label = QLabel('Password')
         self.login = QLineEdit()
         self.password = QLineEdit()
         self.buttons = QDialogButtonBox(
@@ -22,9 +22,9 @@ class LoginDialog(QDialog):
 
         # main layout
         layout = QGridLayout(self)
-        layout.addWidget(loginLb, 0, 0)
+        layout.addWidget(login_label, 0, 0)
         layout.addWidget(self.login, 0, 1)
-        layout.addWidget(passwordLb, 1, 0)
+        layout.addWidget(password_label, 1, 0)
         layout.addWidget(self.password, 1, 1)
         layout.addWidget(self.buttons, 2, 0, 2, 0)
 
@@ -40,9 +40,13 @@ class LoginDialog(QDialog):
         return (self.login.text().strip(),
                 self.password.text().strip())
 
-    # static method, creates dialog and returns (login, password, ok)
+    
     @staticmethod
     def get_login_password(parent=None):
+        """
+        Static method, creates dialog 
+        returns (login, password, ok)
+        """
         dialog = LoginDialog(parent)
         dialog.login.setFocus()
         ok = dialog.exec_()
@@ -91,9 +95,13 @@ class RegisterDialog(QDialog):
                 self.email.text().strip(),
                 self.password.text().strip())
 
-    # static method, creates dialog and returns (login,email, password, ok)
+   
     @staticmethod
     def get_login_password(parent=None):
+        """
+        Static method, creates dialog 
+        returns (login,email, password, ok)
+        """
         dialog = RegisterDialog(parent)
         dialog.login.setFocus()
         ok = dialog.exec_()

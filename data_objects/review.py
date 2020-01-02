@@ -1,5 +1,8 @@
 
 class Review():
+    """
+    class that represents data about review from database
+    """
     def __init__(self,user_id,movie_id,score,id = None):
         self.user_id = user_id if isinstance(user_id,int) else 0
         self.movie_id = movie_id if isinstance(movie_id,int) else 0

@@ -5,7 +5,9 @@ from PyQt5.QtWidgets import QGridLayout
 
 
 class RateDialog(QDialog):
-
+    """
+    Rate dialog window
+    """
     def __init__(self, parent=None):
         super(RateDialog, self).__init__(parent)
 
@@ -13,34 +15,15 @@ class RateDialog(QDialog):
 
         # widget elements 
         layout = QHBoxLayout(self)
-        self.b1 = QRadioButton("1")
-        self.b1.setChecked(True)
-        self.b1.toggled.connect(lambda:self.set_rate(1))
-        layout.addWidget(self.b1)
+        for i in range(1,11):
+            self.radio_button = QRadioButton(f"{i}")
+            self.radio_button.setChecked(True if i == 1 else False)
+            self.radio_button.toggled.connect(lambda state, x = i :self.set_rate(x))
+            layout.addWidget(self.radio_button)
+
         self.buttons = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel,
             Qt.Horizontal, self)
-
-        self.b2 = QRadioButton("2")
-        self.b2.setChecked(False)
-        self.b2.toggled.connect(lambda:self.set_rate(2))
-        layout.addWidget(self.b2)
-
-        self.b3 = QRadioButton("3")
-        self.b3.setChecked(False)
-        self.b3.toggled.connect(lambda:self.set_rate(3))
-        layout.addWidget(self.b3)
-
-
-        self.b4 = QRadioButton("4")
-        self.b4.setChecked(False)
-        self.b4.toggled.connect(lambda:self.set_rate(4))
-        layout.addWidget(self.b4)
-
-        self.b5 = QRadioButton("5")
-        self.b5.setChecked(False)
-        self.b5.toggled.connect(lambda:self.set_rate(5))
-        layout.addWidget(self.b5)
 
         layout.addWidget(self.buttons)
         # signals and slots 
@@ -57,6 +40,10 @@ class RateDialog(QDialog):
 
     @staticmethod
     def get_rate(parent=None):
+        """
+        Static method that creates RateDialog and gets data from it 
+        return rate from 1 to 10
+        """
         dialog = RateDialog(parent)
         dialog.exec_()
         rate = dialog.rate

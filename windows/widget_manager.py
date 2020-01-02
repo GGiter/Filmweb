@@ -1,13 +1,15 @@
-from PyQt5.QtWidgets import QApplication , QWidget , QLabel , QGridLayout , QStackedLayout , QMainWindow
+from PyQt5.QtWidgets import QStackedLayout , QMainWindow
 from windows.main_window import MainWindow
 from windows.profile_window import ProfileWindow
-from PyQt5.QtCore import Qt 
 from windows.filmweb_window import FilmwebWindow
-from dialogs.app_instance import AppInstance
+from app_instance import AppInstance
 from data.database import Database
 import os
 
 class WidgetManager(FilmwebWindow,QMainWindow):
+    """
+    class that controls changing between filmweb windows
+    """
     def __init__(self, parent = None):
         super().__init__(parent)
         self.stacked_layout = QStackedLayout()
@@ -21,18 +23,15 @@ class WidgetManager(FilmwebWindow,QMainWindow):
        
 
     def switch_window(self,window_name,**kwargs):
+        """
+        switch to Main Window or Profile window
+        takes user variable in **kwargs for Profile window
+        """
         if window_name == "Main Window":
             self.stacked_layout.setCurrentIndex(0)
         elif 'user' in kwargs:
             self.profile_window.set_user(kwargs['user'])
             self.stacked_layout.setCurrentIndex(1)
 
-if __name__ == '__main__':
-    import sys
 
-    app = QApplication(sys.argv)
-    AppInstance.db = Database('filmweb.db')
-    widget_manager = WidgetManager()
-  
-    sys.exit(app.exec_())
         

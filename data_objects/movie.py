@@ -1,6 +1,7 @@
-from data_objects.user import User
-
 class Movie :
+    """
+    class that represents data about movie from database
+    """
     def __init__(self,title,director,description,duration,actors,genre,icon_path = None,id = None):
         self.id = id
         self.title = title if isinstance(title,str) else ""
@@ -18,6 +19,11 @@ class Movie :
         self.number_of_users = number_of_users
 
     def rate(self,value,user):
+        """
+        Rate movie 
+        return False if fails 
+        return True if succeeds
+        """
         if user is None:
             return False
 

@@ -4,12 +4,17 @@ from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox ,
 from windows.filmweb_window import FilmwebWindow
 from data_objects.user import User
 from data_objects.review import Review
-from dialogs.app_instance import AppInstance
+from app_instance import AppInstance
 import os
 import sys
 
 class ProfileWindow(FilmwebWindow):
-    def __init__(self, switch_window,user, parent = None):
+    """
+    Window that presents data about user (login)
+    and reviews created by the user
+    needs the reference to switch_window function from WidgetManager
+    """
+    def __init__(self, switch_window, user, parent = None):
         super().__init__(parent)
         self.switch_window = switch_window
         self.interface()

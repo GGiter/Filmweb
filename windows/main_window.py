@@ -7,7 +7,7 @@ from dialogs.login_dialog import LoginDialog , RegisterDialog
 from dialogs.rate_dialog import RateDialog
 from dialogs.add_movie_dialog import AddMovieDialog
 from data.database import Database
-from dialogs.app_instance import AppInstance
+from app_instance import AppInstance
 from dialogs.details_dialog import DetailsDialog
 from data_objects.user import User
 import os
@@ -15,6 +15,12 @@ import sys
 
 
 class MainWindow(FilmwebWindow):
+    """
+    Main window of the project that shows latest movies,
+    recommended movies , users , search engine for movies
+    has login and register buttons
+    needs the reference to switch_window function from WidgetManager
+    """
     def __init__(self, switch_window, parent = None):
         super().__init__(parent)
         self.switch_window = switch_window
@@ -22,11 +28,13 @@ class MainWindow(FilmwebWindow):
     
     
     def interface(self):
+        # create main layout
         self.layout = QGridLayout()
+
         self.show_latest()
 
         layoutMovieH = QHBoxLayout()
-
+        # create main buttons
         latestBtn = QPushButton("&Latest",self)
         latestBtn.clicked.connect(self.show_latest)
         recommendationsBtn = QPushButton("&Recommendations",self)
@@ -38,13 +46,12 @@ class MainWindow(FilmwebWindow):
 
         layoutH = QHBoxLayout()
         self.layoutUserH = QHBoxLayout()
-
-
+        # create basic search engine
         self.search_line = QLineEdit()
         self.search_line.editingFinished.connect(self.search)
         search_keys_layout = QHBoxLayout()
         radio_buttons = []
-        for key in ["title","director","actors"]:
+        for key in ["title","director","actors","genre"]: # radio buttons
             radio_button = QRadioButton(key)
             radio_button.setChecked(False)
             radio_button.clicked.connect(lambda state , x = key: self.set_search_key(x))
@@ -55,6 +62,7 @@ class MainWindow(FilmwebWindow):
         radio_buttons[0].setChecked(True)    
         self.set_search_key("title")
 
+        # create profile interface
         self.profileBtn = QPushButton("&Profile",self)
         self.profileBtn.clicked.connect(lambda: self.show_profile(AppInstance.current_user))
         self.userLabel = QLabel("User")
@@ -63,7 +71,7 @@ class MainWindow(FilmwebWindow):
         self.layoutUserH.addWidget(self.userLabel)
         self.layoutUserH.addWidget(self.profileBtn)
         
-
+        # create user buttons
         self.loginBtn = QPushButton("&Login", self)
         self.loginBtn.clicked.connect(self.login)
         self.registerBtn = QPushButton("&Register", self)
@@ -71,6 +79,7 @@ class MainWindow(FilmwebWindow):
         self.logoutBtn = QPushButton("&Logout",self)
         self.logoutBtn.clicked.connect(self.logout)
 
+        # position layouts
         layoutH.addStretch()
         layoutH.addWidget(self.loginBtn)
         layoutH.addWidget(self.registerBtn)
@@ -212,6 +221,9 @@ class MainWindow(FilmwebWindow):
             print(movie.get_title())
             AppInstance.db.rate_movie(AppInstance.current_user,movie,value)
             label.setText(str(movie.get_avg_rate()))
+        else:
+            QMessageBox.warning(self, 'Error',
+                                'You need to be logged to rate a movie', QMessageBox.Ok)
 
     def login(self):
         login, password, ok = LoginDialog.get_login_password(self)
@@ -269,7 +281,10 @@ class MainWindow(FilmwebWindow):
         self.set_is_logged(None)
 
     def set_is_logged(self,user):
-        if user :
+        """
+        Hide / show buttons , labels based on if the user is valid or not
+        """
+        if user is not None:
             AppInstance.current_user = user  
             self.loginBtn.hide()
             self.registerBtn.hide()

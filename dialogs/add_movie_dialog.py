@@ -37,6 +37,10 @@ class AddMovieDialog(QDialog):
             self.layout.addLayout(box_layout)
 
     def get_data(self):
+        """
+        gets data from QLineEdits 
+        return Movie object
+        """
         data = []
         for line_edit in self.line_edits : 
             data.append(line_edit.text().strip())
@@ -45,6 +49,10 @@ class AddMovieDialog(QDialog):
 
     @staticmethod
     def get_movie_details(parent=None):
+        """
+        Static method that creates AddMovieDialog and get the input from it
+        return input data from the dialog
+        """
         dialog = AddMovieDialog(parent)
         ok = dialog.exec_()
         return (dialog.get_data(),ok == QDialog.Accepted)

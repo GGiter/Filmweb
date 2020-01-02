@@ -1,15 +1,12 @@
-from PyQt5.QtWidgets import QApplication , QWidget,QStyleFactory 
-from dialogs.app_instance import AppInstance
+from PyQt5.QtWidgets import QApplication , QStyleFactory 
+from app_instance import AppInstance
 from windows.widget_manager import WidgetManager
 from data.database import Database
+import sys
 
 if __name__ == '__main__':
-    import sys
-
-    app = QApplication(sys.argv)
-    AppInstance.db = Database('filmweb.db')
-    app.setStyle(QStyleFactory.create('Fusion'))
+    app_instance = AppInstance(QApplication(sys.argv),Database('filmweb.db'))
+    app_instance.app.setStyle(QStyleFactory.create('Fusion'))
     widget_manager = WidgetManager()
-    
-    sys.exit(app.exec_())
+    sys.exit(app_instance.app.exec_())
         

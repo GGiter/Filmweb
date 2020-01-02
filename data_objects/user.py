@@ -1,6 +1,7 @@
-
-
 class User :
+    """
+    class that represents data about user from database
+    """
     def __init__(self,login,email,password,icon_path = None , id = None):
         self.login = login if isinstance(login,str) else ""
         self.email = email if isinstance(email,str) and email.find("@") != -1 else ""

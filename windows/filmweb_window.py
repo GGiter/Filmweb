@@ -1,11 +1,17 @@
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QLineEdit , QPushButton , QHBoxLayout ,QMessageBox , QScrollArea , QGroupBox , QFormLayout 
+from PyQt5.QtWidgets import QMessageBox
 import os
 import sys
 
 class FilmwebWindow(QWidget):
+    """
+    Class that is a parent to all other windows
+    sets window icon
+    sets window geometry and fixed size
+    sets window title
+    """
     def __init__(self, parent = None):
         super().__init__(parent)
         self.setGeometry(100,100,500,350)
@@ -14,8 +20,8 @@ class FilmwebWindow(QWidget):
         self.setWindowTitle('Filmweb')
 
     def closeEvent(self, event):
-
-        answer = QMessageBox.question(self, 'Warning',"Do you really want to leave?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        answer = QMessageBox.question(self, 'Warning',"Do you really want to leave?"
+        , QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
     
         if answer == QMessageBox.Yes:
             event.accept()
