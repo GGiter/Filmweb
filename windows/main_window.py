@@ -28,31 +28,36 @@ class MainWindow(FilmwebWindow):
     
     
     def interface(self):
+        """
+        Creates basic layout
+        adds latest_button , user_button, add_movie button 
+        adds search engine 
+        adds login_button , register_button
+        """
         # create main layout
         self.layout = QGridLayout()
-
+           
         self.show_latest()
 
         layoutMovieH = QHBoxLayout()
         # create main buttons
-        latestBtn = QPushButton("&Latest",self)
-        latestBtn.clicked.connect(self.show_latest)
-        recommendationsBtn = QPushButton("&Recommendations",self)
-        recommendationsBtn.clicked.connect(self.show_recommendations)
-        usersBtn = QPushButton("&Users",self)
-        usersBtn.clicked.connect(self.show_users)
-        add_movieBtn = QPushButton("&Add movie",self)
-        add_movieBtn.clicked.connect(self.add_movie)
+        latest_button = QPushButton("&Latest",self)
+        latest_button.clicked.connect(self.show_latest)
+        recommendations_button = QPushButton("&Recommendations",self)
+        recommendations_button.clicked.connect(self.show_recommendations)
+        users_button = QPushButton("&Users",self)
+        users_button.clicked.connect(self.show_users)
+        add_movie_button = QPushButton("&Add movie",self)
+        add_movie_button.clicked.connect(self.add_movie)
 
-        layoutH = QHBoxLayout()
-        self.layoutUserH = QHBoxLayout()
+       
         # create basic search engine
         self.search_line = QLineEdit()
         self.search_line.editingFinished.connect(self.search)
         search_keys_layout = QHBoxLayout()
         radio_buttons = []
         for key in ["title","director","actors","genre"]: # radio buttons
-            radio_button = QRadioButton(key)
+            radio_button = QRadioButton(key.capitalize())
             radio_button.setChecked(False)
             radio_button.clicked.connect(lambda state , x = key: self.set_search_key(x))
             search_keys_layout.addWidget(radio_button)
@@ -63,33 +68,35 @@ class MainWindow(FilmwebWindow):
         self.set_search_key("title")
 
         # create profile interface
-        self.profileBtn = QPushButton("&Profile",self)
-        self.profileBtn.clicked.connect(lambda: self.show_profile(AppInstance.current_user))
+        self.layoutUserH = QHBoxLayout()
+        self.profile_button = QPushButton("&Profile",self)
+        self.profile_button.clicked.connect(lambda: self.show_profile(AppInstance.current_user))
         self.userLabel = QLabel("User")
         self.layoutUserH.addWidget(self.search_line)
         self.layoutUserH.addStretch()
         self.layoutUserH.addWidget(self.userLabel)
-        self.layoutUserH.addWidget(self.profileBtn)
+        self.layoutUserH.addWidget(self.profile_button)
         
         # create user buttons
-        self.loginBtn = QPushButton("&Login", self)
-        self.loginBtn.clicked.connect(self.login)
-        self.registerBtn = QPushButton("&Register", self)
-        self.registerBtn.clicked.connect(self.register)
-        self.logoutBtn = QPushButton("&Logout",self)
-        self.logoutBtn.clicked.connect(self.logout)
+        self.login_button = QPushButton("&Login", self)
+        self.login_button.clicked.connect(self.login)
+        self.register_button = QPushButton("&Register", self)
+        self.register_button.clicked.connect(self.register)
+        self.logout_button = QPushButton("&Logout",self)
+        self.logout_button.clicked.connect(self.logout)
 
         # position layouts
+        layoutH = QHBoxLayout()
         layoutH.addStretch()
-        layoutH.addWidget(self.loginBtn)
-        layoutH.addWidget(self.registerBtn)
-        layoutH.addWidget(self.logoutBtn)
+        layoutH.addWidget(self.login_button)
+        layoutH.addWidget(self.register_button)
+        layoutH.addWidget(self.logout_button)
 
-        layoutMovieH.addWidget(latestBtn)
-        layoutMovieH.addWidget(recommendationsBtn)
-        layoutMovieH.addWidget(usersBtn)
+        layoutMovieH.addWidget(latest_button)
+        layoutMovieH.addWidget(recommendations_button)
+        layoutMovieH.addWidget(users_button)
         layoutMovieH.addStretch()
-        layoutMovieH.addWidget(add_movieBtn)
+        layoutMovieH.addWidget(add_movie_button)
 
         self.layout.addLayout(self.layoutUserH,0,0)
         self.layout.addLayout(search_keys_layout,1,0)
@@ -102,6 +109,11 @@ class MainWindow(FilmwebWindow):
         self.show()
     
     def show_movies(self,**kwargs):
+        """
+        Show latest movies in scroll box if not kwargs are specified
+        show recommended movies if there is "sort" in kwargs
+        show movies by parameter if there is "key" and "value" in kwargs
+        """
         mygroupbox = QGroupBox()
         myform = QFormLayout()
 
@@ -149,17 +161,26 @@ class MainWindow(FilmwebWindow):
         self.layout.addLayout(box_layout,3,0)
 
     def set_search_key(self,key):
+        """
+        Sets search key for search engine
+        """
         self.search_key = key
         if self.search_line.text().strip() is not "":
             self.search()
 
     def search(self):
+        """
+        Search movies by search key
+        """
         if self.search_line.text().strip() is not "":
             self.show_movies(key = self.search_key , value = self.search_line.text().strip())
         else:
             self.show_movies()
    
     def show_users(self):
+        """
+        Show all of the users in scroll box
+        """
         mygroupbox = QGroupBox()
         myform = QFormLayout()
 
@@ -226,6 +247,9 @@ class MainWindow(FilmwebWindow):
                                 'You need to be logged to rate a movie', QMessageBox.Ok)
 
     def login(self):
+        """
+        Pops up login dialog and login the user if successfull 
+        """
         login, password, ok = LoginDialog.get_login_password(self)
         if not ok:
             return
@@ -253,6 +277,9 @@ class MainWindow(FilmwebWindow):
             'Information:','Logged succesfully!', QMessageBox.Ok)
 
     def register(self):
+        """
+        Pops up login dialog and register the user if successfull 
+        """
         login, email, password, ok = RegisterDialog.get_login_password(self)
         if not ok:
             return
@@ -277,6 +304,9 @@ class MainWindow(FilmwebWindow):
 
 
     def logout(self):
+        """
+        Logs out the user if there is logged one 
+        """
         AppInstance.current_user = None
         self.set_is_logged(None)
 
@@ -286,17 +316,18 @@ class MainWindow(FilmwebWindow):
         """
         if user is not None:
             AppInstance.current_user = user  
-            self.loginBtn.hide()
-            self.registerBtn.hide()
-            self.logoutBtn.show()
+            self.login_button.hide()
+            self.register_button.hide()
+            self.logout_button.show()
             self.userLabel.setText(user.get_login())
             self.userLabel.show()
-            self.profileBtn.show()
+            self.profile_button.show()
         else:
             AppInstance.current_user = None
-            self.loginBtn.show()
-            self.registerBtn.show()
-            self.logoutBtn.hide()
+            self.login_button.show()
+            self.register_button.show()
+            self.logout_button.hide()
             self.userLabel.hide()
-            self.profileBtn.hide()
+            self.profile_button.hide()
+
 

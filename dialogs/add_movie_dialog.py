@@ -30,7 +30,7 @@ class AddMovieDialog(FilmwebDialog):
         self.line_edits = []
         for field in ["title","director","description","duration","actors","genre"]:
             box_layout = QHBoxLayout()
-            label = QLabel(field)
+            label = QLabel(field.capitalize())
             line_edit = QLineEdit()
             self.line_edits.append(line_edit)
             box_layout.addWidget(label)

@@ -1,6 +1,7 @@
-from database import Database
-from random import randrange
 from data_objects.movie import Movie
+from data.database import Database
+from random import randrange
+
 emails_prefixs = ["gonzo","bonzo","kapelusz","szalik","zajac","internet"]
 emails_suffixs = ["net.com","gmail.com","pw.pl","internet"]
 logins = ["gonzo","bonzo","kapelusz","szalik","zajac","internet","marszalek","skyr","ross"] 

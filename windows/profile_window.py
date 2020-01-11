@@ -21,6 +21,9 @@ class ProfileWindow(FilmwebWindow):
         self.set_user(user)
 
     def interface(self):
+        """
+        Create basic interface
+        """
         self.layout = QGridLayout()
         self.setLayout(self.layout)
 
@@ -28,6 +31,9 @@ class ProfileWindow(FilmwebWindow):
         self.switch_window("Main Window")
 
     def show_reviews(self):
+        """
+        Shows reviews submitted by user
+        """
         mygroupbox = QGroupBox()
         myform = QFormLayout()
 
@@ -35,7 +41,7 @@ class ProfileWindow(FilmwebWindow):
             box_layout = QHBoxLayout()
             movie_label = QLabel(AppInstance.db.get_field("movies","title",review.get_movie_id()))
             director_label = QLabel(AppInstance.db.get_field("movies","director",review.get_movie_id()))
-            score_label = QLabel(str(review.get_score()))
+            score_label = QLabel(review.get_score())
             if AppInstance.db.get_field("movies","icon_path",review.get_movie_id()) != 'None':
                 pixmap = QPixmap(AppInstance.db.get_field("movies","icon_path",review.get_movie_id())).scaled(20,20)  
             else:
