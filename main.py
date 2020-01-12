@@ -9,4 +9,5 @@ if __name__ == '__main__':
     app_instance.app.setStyle(QStyleFactory.create('Fusion'))
     widget_manager = WidgetManager()
     sys.exit(app_instance.app.exec_())
+
         
