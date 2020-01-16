@@ -1,8 +1,2 @@
-.pytest_cache
-.vscode
-__pycache__
-data/__pycache__
-data_objects/__pycache__
-dialogs/__pycache__
-tests/__pycache__
-windows/__pycache__
+/.vscode
+**/__pycache__
