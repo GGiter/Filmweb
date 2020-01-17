@@ -1,9 +1,10 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox
-from PyQt5.QtWidgets import QLabel, QLineEdit , QRadioButton ,QVBoxLayout
+from PyQt5.QtWidgets import QLabel, QLineEdit , QRadioButton ,QVBoxLayout , QHBoxLayout , QScrollArea , QGroupBox , QFormLayout 
 from PyQt5.QtWidgets import QGridLayout
 from app_instance import AppInstance
 from dialogs.filmweb_dialog import FilmwebDialog
+from data_objects.review import Review
 
 class DetailsDialog(FilmwebDialog):
     """
@@ -11,6 +12,8 @@ class DetailsDialog(FilmwebDialog):
     """
     def __init__(self, movie, parent=None):
         super(DetailsDialog, self).__init__(parent)
+        self.setMaximumWidth(250)
+        self.setMaximumHeight(250)
         # widget elements 
         self.layout = QVBoxLayout(self)
         self.buttons = QDialogButtonBox(
@@ -18,6 +21,7 @@ class DetailsDialog(FilmwebDialog):
             Qt.Horizontal, self)
 
         self.get_details(movie)
+        self.get_ratings(movie)
         self.layout.addWidget(self.buttons)
         # signals and slots 
         self.buttons.accepted.connect(self.accept)
@@ -33,8 +37,32 @@ class DetailsDialog(FilmwebDialog):
         Get details about movie
         """
         for field in ["title","director","description","duration","actors","genre"]:
-            label = QLabel(field + ": " + AppInstance.db.get_field("movies",field,movie.get_id()))
+            label = QLabel(field.capitalize() + ": " + str(AppInstance.db.get_field("movies",field,movie.get_id())))
             self.layout.addWidget(label)
+    
+    def get_ratings(self,movie):
+        """
+        Get user ratings for a movie
+        """
+        mygroupbox = QGroupBox()
+        myform = QFormLayout()
+
+        reviews = AppInstance.db.get_movie_reviews(movie)
+        for review in reviews:
+            box_layout = QHBoxLayout()
+            user_label = QLabel(str(AppInstance.db.get_field("users","login",review.get_user_id())))
+            rate_label = QLabel(str(review.get_score()))
+            box_layout.addWidget(user_label)
+            box_layout.addWidget(rate_label)
+            myform.addRow(box_layout)
+
+        mygroupbox.setLayout(myform)
+        scroll = QScrollArea()
+        scroll.setWidget(mygroupbox)
+        scroll.setWidgetResizable(True) 
+        box_layout = QHBoxLayout()
+        box_layout.addWidget(scroll)
+        self.layout.addLayout(box_layout)
 
     @staticmethod
     def get_movie_details(movie,parent=None):

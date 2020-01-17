@@ -8,6 +8,10 @@ from dialogs.filmweb_dialog import FilmwebDialog
 class AddMovieDialog(FilmwebDialog):
     def __init__(self, movie, parent=None):
         super(AddMovieDialog, self).__init__(parent)
+
+        self.setMaximumWidth(250)
+        self.setMaximumHeight(250)
+        
         # widget elements 
         self.layout = QVBoxLayout(self)
         self.buttons = QDialogButtonBox(

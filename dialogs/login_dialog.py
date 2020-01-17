@@ -11,6 +11,9 @@ class LoginDialog(FilmwebDialog):
     def __init__(self, parent=None):
         super(LoginDialog, self).__init__(parent)
 
+        self.setMaximumWidth(250)
+        self.setMaximumHeight(250)
+
         # widget elements 
         login_label = QLabel('Login')
         password_label = QLabel('Password')

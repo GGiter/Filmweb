@@ -10,8 +10,9 @@ class RateDialog(FilmwebDialog):
     """
     def __init__(self, parent=None):
         super(RateDialog, self).__init__(parent)
-
-        self.rate = 1
+        self.set_rate(1)
+        self.setMaximumWidth(500)
+        self.setMaximumHeight(100)
 
         # widget elements 
         layout = QHBoxLayout(self)

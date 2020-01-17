@@ -35,12 +35,35 @@ class MainWindow(FilmwebWindow):
         adds login_button , register_button
         """
         # create main layout
-        self.layout = QGridLayout()
-           
-        self.show_latest()
-
-        layoutMovieH = QHBoxLayout()
+        self.layout = QGridLayout() 
+     
         # create main buttons
+        self.create_main_buttons()
+
+        # create basic search engine
+        self.create_search_engine()
+
+        # create profile interface
+        self.create_profile_interface()
+        
+        # create user buttons
+        self.create_user_buttons()
+
+        # position layouts
+        self.layout.addLayout(self.layoutUserH,0,0)   
+        self.layout.addLayout(self.search_keys_layout,1,0)
+        self.layout.addLayout(self.layoutMovieH,2,0)
+        self.layout.addLayout(self.layoutH,4,0)
+        self.setLayout(self.layout)
+
+        self.show_latest()
+        self.set_is_logged(None)
+        self.show()
+
+    def create_main_buttons(self):
+        """
+        Create main buttons
+        """
         latest_button = QPushButton("&Latest",self)
         latest_button.clicked.connect(self.show_latest)
         recommendations_button = QPushButton("&Recommendations",self)
@@ -50,34 +73,31 @@ class MainWindow(FilmwebWindow):
         add_movie_button = QPushButton("&Add movie",self)
         add_movie_button.clicked.connect(self.add_movie)
 
-       
-        # create basic search engine
-        self.search_line = QLineEdit()
-        self.search_line.editingFinished.connect(self.search)
-        search_keys_layout = QHBoxLayout()
-        radio_buttons = []
-        for key in ["title","director","actors","genre"]: # radio buttons
-            radio_button = QRadioButton(key.capitalize())
-            radio_button.setChecked(False)
-            radio_button.clicked.connect(lambda state , x = key: self.set_search_key(x))
-            search_keys_layout.addWidget(radio_button)
-            radio_buttons.append(radio_button)
+        #Create layout for movie buttons
+        self.layoutMovieH = QHBoxLayout()
+        self.layoutMovieH.addWidget(latest_button)
+        self.layoutMovieH.addWidget(recommendations_button)
+        self.layoutMovieH.addWidget(users_button)
+        self.layoutMovieH.addStretch()
+        self.layoutMovieH.addWidget(add_movie_button)
 
-        search_keys_layout.addStretch()
-        radio_buttons[0].setChecked(True)    
-        self.set_search_key("title")
-
-        # create profile interface
+    def create_profile_interface(self):
+        """
+        Create profile interface
+        """ 
         self.layoutUserH = QHBoxLayout()
         self.profile_button = QPushButton("&Profile",self)
         self.profile_button.clicked.connect(lambda: self.show_profile(AppInstance.current_user))
-        self.userLabel = QLabel("User")
+        self.user_label = QLabel("User")
         self.layoutUserH.addWidget(self.search_line)
         self.layoutUserH.addStretch()
-        self.layoutUserH.addWidget(self.userLabel)
+        self.layoutUserH.addWidget(self.user_label)
         self.layoutUserH.addWidget(self.profile_button)
-        
-        # create user buttons
+
+    def create_user_buttons(self):
+        """
+        Create user buttons
+        """
         self.login_button = QPushButton("&Login", self)
         self.login_button.clicked.connect(self.login)
         self.register_button = QPushButton("&Register", self)
@@ -85,28 +105,32 @@ class MainWindow(FilmwebWindow):
         self.logout_button = QPushButton("&Logout",self)
         self.logout_button.clicked.connect(self.logout)
 
-        # position layouts
-        layoutH = QHBoxLayout()
-        layoutH.addStretch()
-        layoutH.addWidget(self.login_button)
-        layoutH.addWidget(self.register_button)
-        layoutH.addWidget(self.logout_button)
+        #Create layout for user buttons
+        self.layoutH = QHBoxLayout()
+        self.layoutH.addStretch()
+        self.layoutH.addWidget(self.login_button)
+        self.layoutH.addWidget(self.register_button)
+        self.layoutH.addWidget(self.logout_button)
 
-        layoutMovieH.addWidget(latest_button)
-        layoutMovieH.addWidget(recommendations_button)
-        layoutMovieH.addWidget(users_button)
-        layoutMovieH.addStretch()
-        layoutMovieH.addWidget(add_movie_button)
+    def create_search_engine(self):
+        """
+        Create basic search engine
+        """
+        self.search_line = QLineEdit()
+        self.search_line.editingFinished.connect(self.search)
+        self.search_keys_layout = QHBoxLayout()
+        radio_buttons = []
+        for key in ["title","director","actors","genre"]: # radio buttons
+            radio_button = QRadioButton(key.capitalize())
+            radio_button.setChecked(False)
+            radio_button.clicked.connect(lambda state , x = key: self.set_search_key(x))
+            self.search_keys_layout.addWidget(radio_button)
+            radio_buttons.append(radio_button)
 
-        self.layout.addLayout(self.layoutUserH,0,0)
-        self.layout.addLayout(search_keys_layout,1,0)
-        self.layout.addLayout(layoutMovieH,2,0)
-        self.layout.addLayout(layoutH,4,0)
-        self.setLayout(self.layout)
-
-        self.set_is_logged(None)
-
-        self.show()
+        self.search_keys_layout.addStretch()
+        radio_buttons[0].setChecked(True)    
+        self.set_search_key("title")
+       
     
     def show_movies(self,**kwargs):
         """
@@ -114,12 +138,7 @@ class MainWindow(FilmwebWindow):
         show recommended movies if there is "sort" in kwargs
         show movies by parameter if there is "key" and "value" in kwargs
         """
-        mygroupbox = QGroupBox()
-        myform = QFormLayout()
-
-        title_labels = []
-        buttons = []
-        movies = []
+        form_layout = QFormLayout()
         if "key" in kwargs and "value" in kwargs:
             movies = AppInstance.db.get_movies_by_parameter(self.search_key,self.search_line.text().strip())
         elif "sort" in kwargs:
@@ -132,7 +151,7 @@ class MainWindow(FilmwebWindow):
             title_label = QLabel(movie.get_title())
             avg_rate_label = QLabel(str(movie.get_avg_rate()))
             button = QPushButton("&Rate", self)
-            button.clicked.connect(lambda state , x = movie , label = avg_rate_label: self.rate_movie(x,label,RateDialog.get_rate(self)))
+            button.clicked.connect(lambda state , x = movie , label = avg_rate_label: self.rate_movie(x,label))
             details_button = QPushButton("&Details", self)
             details_button.clicked.connect(lambda state , x = movie : DetailsDialog.get_movie_details(x,self))
             if  movie.get_icon_path() != 'None':
@@ -147,18 +166,9 @@ class MainWindow(FilmwebWindow):
             box_layout.addWidget(avg_rate_label)
             box_layout.addWidget(details_button)
             box_layout.addWidget(button)
-            myform.addRow(box_layout)
-            title_labels.append(title_label)    
-            buttons.append(button)
+            form_layout.addRow(box_layout)
         
-        mygroupbox.setLayout(myform)
-        scroll = QScrollArea()
-        scroll.setWidget(mygroupbox)
-        scroll.setWidgetResizable(True) 
-        scroll.setFixedHeight(200)
-        box_layout = QHBoxLayout()
-        box_layout.addWidget(scroll)
-        self.layout.addLayout(box_layout,3,0)
+        self.create_scroll_box(form_layout,3)
 
     def set_search_key(self,key):
         """
@@ -181,9 +191,7 @@ class MainWindow(FilmwebWindow):
         """
         Show all of the users in scroll box
         """
-        mygroupbox = QGroupBox()
-        myform = QFormLayout()
-
+        form_layout = QFormLayout()
         for user in AppInstance.db.get_users():
             box_layout = QHBoxLayout()
             login_label = QLabel(user.get_login())
@@ -198,17 +206,22 @@ class MainWindow(FilmwebWindow):
             box_layout.addWidget(pic)
             box_layout.addWidget(login_label)
             box_layout.addWidget(button)
-            myform.addRow(box_layout)
-            
+            form_layout.addRow(box_layout)
         
-        mygroupbox.setLayout(myform)
+        self.create_scroll_box(form_layout,3)
+
+    def create_scroll_box(self,form_layout,position):
+        mygroupbox = QGroupBox()
+
+        mygroupbox.setLayout(form_layout)
         scroll = QScrollArea()
         scroll.setWidget(mygroupbox)
         scroll.setWidgetResizable(True) 
         scroll.setFixedHeight(200)
         box_layout = QHBoxLayout()
         box_layout.addWidget(scroll)
-        self.layout.addLayout(box_layout,3,0)
+        self.layout.addLayout(box_layout,position,0)
+
 
     def add_movie(self):
         movie, ok = AddMovieDialog.get_movie_details(self)
@@ -237,10 +250,9 @@ class MainWindow(FilmwebWindow):
     def show_recommendations(self):
         self.show_movies(sort = True)
 
-    def rate_movie(self,movie,label,value):
+    def rate_movie(self,movie,label):
         if AppInstance.current_user:
-            print(movie.get_title())
-            AppInstance.db.rate_movie(AppInstance.current_user,movie,value)
+            AppInstance.db.rate_movie(AppInstance.current_user,movie,RateDialog.get_rate(self))
             label.setText(str(movie.get_avg_rate()))
         else:
             QMessageBox.warning(self, 'Error',
@@ -319,15 +331,15 @@ class MainWindow(FilmwebWindow):
             self.login_button.hide()
             self.register_button.hide()
             self.logout_button.show()
-            self.userLabel.setText(user.get_login())
-            self.userLabel.show()
+            self.user_label.setText(user.get_login())
+            self.user_label.show()
             self.profile_button.show()
         else:
             AppInstance.current_user = None
             self.login_button.show()
             self.register_button.show()
             self.logout_button.hide()
-            self.userLabel.hide()
+            self.user_label.hide()
             self.profile_button.hide()
 
 
