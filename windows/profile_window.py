@@ -42,11 +42,11 @@ class ProfileWindow(FilmwebWindow):
 
         for review in AppInstance.db.get_user_reviews(self.user):
             box_layout = QHBoxLayout()
-            movie_label = QLabel(AppInstance.db.get_field("movies","title",review.get_movie_id()))
-            director_label = QLabel(AppInstance.db.get_field("movies","director",review.get_movie_id()))
-            score_label = QLabel(review.get_score())
-            if AppInstance.db.get_field("movies","icon_path",review.get_movie_id()) != 'None':
-                pixmap = QPixmap(AppInstance.db.get_field("movies","icon_path",review.get_movie_id())).scaled(20,20)  
+            movie_label = QLabel(AppInstance.db.get_field_by_id("movies","title",review.get_movie_id()))
+            director_label = QLabel(AppInstance.db.get_field_by_id("movies","director",review.get_movie_id()))
+            score_label = QLabel(str(review.get_score()))
+            if AppInstance.db.get_field_by_id("movies","icon_path",review.get_movie_id()) != 'None':
+                pixmap = QPixmap(AppInstance.db.get_field_by_id("movies","icon_path",review.get_movie_id())).scaled(20,20)  
             else:
                 pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/icons/user.png').scaled(20,20)
             pic = QLabel()
@@ -72,7 +72,18 @@ class ProfileWindow(FilmwebWindow):
         self.delete_items_of_layout(self.layout)
         if user is not None:
             self.label = QLabel(self.user.get_login())
+
+            if user.get_icon_path() != 'None':
+                pixmap = QPixmap(user.get_icon_path()).scaled(20,20)  
+            else:
+                pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/icons/user.png').scaled(20,20)
+
+            pic = QLabel()
+            pic.setPixmap(pixmap)
+            pic.setFixedSize(20,20)
+
             self.box_layout = QHBoxLayout()
+            self.box_layout.addWidget(pic)
             self.box_layout.addWidget(self.label)
             self.layout.addLayout(self.box_layout,0,0)
             self.backBtn = QPushButton("&Back",self)
