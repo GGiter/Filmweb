@@ -28,6 +28,9 @@ class ProfileWindow(FilmwebWindow):
         self.setLayout(self.layout)
 
     def show_main_window(self):
+        """
+        go back to main window
+        """
         self.switch_window("Main Window")
 
     def show_reviews(self):

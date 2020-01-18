@@ -42,7 +42,7 @@ class Database:
 
       return True
 
-   def get_field(self,table_name,field_name,id):
+   def get_field_by_id(self,table_name,field_name,id):
       """
       Get field value from database by id 
       """
@@ -69,7 +69,8 @@ class Database:
       """
       if (len(email) == 0 or len(login) == 0 or len(password) == 0 
          or self.get_field_by_parameter("users","login","login",login) is not None 
-         or self.get_field_by_parameter("users","email","email",email) is not None):      
+         or self.get_field_by_parameter("users","email","email",email) is not None
+         or email.find('@') <= 0 ):      
          return None
       
       query = QtSql.QSqlQuery()
