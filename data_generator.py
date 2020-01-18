@@ -24,8 +24,6 @@ def generate_users(db):
           x += 1
 
 
-
-
 def generate_movies(db):
 
     titles = ["Honolulu","Escape","Great Escape","Monkey","Bones","Joker","Zootopia","The Jungle Book"

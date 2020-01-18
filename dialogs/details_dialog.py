@@ -23,6 +23,7 @@ class DetailsDialog(FilmwebDialog):
         self.get_details(movie)
         self.get_ratings(movie)
         self.layout.addWidget(self.buttons)
+        
         # signals and slots 
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)
@@ -37,7 +38,7 @@ class DetailsDialog(FilmwebDialog):
         Get details about movie
         """
         for field in ["title","director","description","duration","actors","genre"]:
-            label = QLabel(field.capitalize() + ": " + str(AppInstance.db.get_field("movies",field,movie.get_id())))
+            label = QLabel(field.capitalize() + ": " + str(AppInstance.db.get_field_by_id("movies",field,movie.get_id())))
             self.layout.addWidget(label)
     
     def get_ratings(self,movie):
@@ -50,7 +51,7 @@ class DetailsDialog(FilmwebDialog):
         reviews = AppInstance.db.get_movie_reviews(movie)
         for review in reviews:
             box_layout = QHBoxLayout()
-            user_label = QLabel(str(AppInstance.db.get_field("users","login",review.get_user_id())))
+            user_label = QLabel(str(AppInstance.db.get_field_by_id("users","login",review.get_user_id())))
             rate_label = QLabel(str(review.get_score()))
             box_layout.addWidget(user_label)
             box_layout.addWidget(rate_label)

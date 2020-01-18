@@ -51,11 +51,11 @@ class Movie :
     def get_duration(self):
         return self.duration
 
-    def get_actors(self):
+    def get_actors(self):   
         return self.actors
 
     def get_genre(self):
-        return self.actors
+        return self.genre
 
     def get_id(self):
         return self.id
