@@ -21,6 +21,7 @@ class AddMovieDialog(FilmwebDialog):
         self.show_fields()
 
         self.layout.addWidget(self.buttons)
+        
         # signals and slots 
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)

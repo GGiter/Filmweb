@@ -15,18 +15,14 @@ class RateDialog(FilmwebDialog):
         self.setMaximumHeight(100)
 
         # widget elements 
-        layout = QHBoxLayout(self)
-        for i in range(1,11):
-            self.radio_button = QRadioButton(f"{i}")
-            self.radio_button.setChecked(True if i == 1 else False)
-            self.radio_button.toggled.connect(lambda state, x = i :self.set_rate(x))
-            layout.addWidget(self.radio_button)
+        self.layout = QHBoxLayout(self)
+        self.create_radio_buttons()
 
         self.buttons = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel,
             Qt.Horizontal, self)
 
-        layout.addWidget(self.buttons)
+        self.layout.addWidget(self.buttons)
         # signals and slots 
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)
@@ -34,7 +30,13 @@ class RateDialog(FilmwebDialog):
         # properties of widget 
         self.setModal(True)
         self.setWindowTitle('Rate')
-
+        
+    def create_radio_buttons(self):
+        for i in range(1,11):
+            self.radio_button = QRadioButton(f"{i}")
+            self.radio_button.setChecked(True if i == 1 else False)
+            self.radio_button.toggled.connect(lambda state, x = i :self.set_rate(x))
+            self.layout.addWidget(self.radio_button)
 
     def set_rate(self,value):
         self.rate = value

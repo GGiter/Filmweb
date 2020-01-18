@@ -50,10 +50,10 @@ class MainWindow(FilmwebWindow):
         self.create_user_buttons()
 
         # position layouts
-        self.layout.addLayout(self.layoutUserH,0,0)   
+        self.layout.addLayout(self.layout_user_h,0,0)   
         self.layout.addLayout(self.search_keys_layout,1,0)
-        self.layout.addLayout(self.layoutMovieH,2,0)
-        self.layout.addLayout(self.layoutH,4,0)
+        self.layout.addLayout(self.layout_movie_h,2,0)
+        self.layout.addLayout(self.layout_h,4,0)
         self.setLayout(self.layout)
 
         self.show_latest()
@@ -74,25 +74,25 @@ class MainWindow(FilmwebWindow):
         add_movie_button.clicked.connect(self.add_movie)
 
         #Create layout for movie buttons
-        self.layoutMovieH = QHBoxLayout()
-        self.layoutMovieH.addWidget(latest_button)
-        self.layoutMovieH.addWidget(recommendations_button)
-        self.layoutMovieH.addWidget(users_button)
-        self.layoutMovieH.addStretch()
-        self.layoutMovieH.addWidget(add_movie_button)
+        self.layout_movie_h = QHBoxLayout()
+        self.layout_movie_h.addWidget(latest_button)
+        self.layout_movie_h.addWidget(recommendations_button)
+        self.layout_movie_h.addWidget(users_button)
+        self.layout_movie_h.addStretch()
+        self.layout_movie_h.addWidget(add_movie_button)
 
     def create_profile_interface(self):
         """
         Create profile interface
         """ 
-        self.layoutUserH = QHBoxLayout()
+        self.layout_user_h = QHBoxLayout()
         self.profile_button = QPushButton("&Profile",self)
         self.profile_button.clicked.connect(lambda: self.show_profile(AppInstance.current_user))
         self.user_label = QLabel("User")
-        self.layoutUserH.addWidget(self.search_line)
-        self.layoutUserH.addStretch()
-        self.layoutUserH.addWidget(self.user_label)
-        self.layoutUserH.addWidget(self.profile_button)
+        self.layout_user_h.addWidget(self.search_line)
+        self.layout_user_h.addStretch()
+        self.layout_user_h.addWidget(self.user_label)
+        self.layout_user_h.addWidget(self.profile_button)
 
     def create_user_buttons(self):
         """
@@ -106,11 +106,11 @@ class MainWindow(FilmwebWindow):
         self.logout_button.clicked.connect(self.logout)
 
         #Create layout for user buttons
-        self.layoutH = QHBoxLayout()
-        self.layoutH.addStretch()
-        self.layoutH.addWidget(self.login_button)
-        self.layoutH.addWidget(self.register_button)
-        self.layoutH.addWidget(self.logout_button)
+        self.layout_h = QHBoxLayout()
+        self.layout_h.addStretch()
+        self.layout_h.addWidget(self.login_button)
+        self.layout_h.addWidget(self.register_button)
+        self.layout_h.addWidget(self.logout_button)
 
     def create_search_engine(self):
         """
@@ -154,10 +154,12 @@ class MainWindow(FilmwebWindow):
             button.clicked.connect(lambda state , x = movie , label = avg_rate_label: self.rate_movie(x,label))
             details_button = QPushButton("&Details", self)
             details_button.clicked.connect(lambda state , x = movie : DetailsDialog.get_movie_details(x,self))
+
             if  movie.get_icon_path() != 'None':
                 pixmap = QPixmap(movie.get_icon_path()).scaled(20,20) 
             else:
                 pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/icons/movie.png').scaled(20,20)
+
             pic = QLabel()
             pic.setPixmap(pixmap)
             box_layout.addWidget(pic)
@@ -197,10 +199,12 @@ class MainWindow(FilmwebWindow):
             login_label = QLabel(user.get_login())
             button = QPushButton("&Profile", self)
             button.clicked.connect(lambda state, x = user: self.show_profile(x))
+
             if user.get_icon_path() != 'None':
                 pixmap = QPixmap(user.get_icon_path()).scaled(20,20)  
             else:
                 pixmap = QPixmap(os.path.dirname(sys.argv[0]) + '/icons/user.png').scaled(20,20)
+
             pic = QLabel()
             pic.setPixmap(pixmap)
             box_layout.addWidget(pic)
