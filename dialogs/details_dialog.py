@@ -1,10 +1,10 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox
-from PyQt5.QtWidgets import QLabel, QLineEdit , QRadioButton ,QVBoxLayout , QHBoxLayout , QScrollArea , QGroupBox , QFormLayout 
-from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QDialogButtonBox, QGroupBox, QFormLayout
+from PyQt5.QtWidgets import QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QHBoxLayout, QScrollArea
 from app_instance import AppInstance
 from dialogs.filmweb_dialog import FilmwebDialog
-from data_objects.review import Review
+
 
 class DetailsDialog(FilmwebDialog):
     """
@@ -14,7 +14,7 @@ class DetailsDialog(FilmwebDialog):
         super(DetailsDialog, self).__init__(parent)
         self.setMaximumWidth(250)
         self.setMaximumHeight(250)
-        # widget elements 
+        # widget elements
         self.layout = QVBoxLayout(self)
         self.buttons = QDialogButtonBox(
             QDialogButtonBox.Ok,
@@ -23,35 +23,40 @@ class DetailsDialog(FilmwebDialog):
         self.get_details(movie)
         self.get_ratings(movie)
         self.layout.addWidget(self.buttons)
-        
-        # signals and slots 
+        # signals and slots
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)
 
-        # properties of widget 
+        # properties of widget
         self.setModal(True)
         self.setWindowTitle('Details')
-
-        
-    def get_details(self,movie):
+ 
+    def get_details(self, movie):
         """
         Get details about movie
         """
-        for field in ["title","director","description","duration","actors","genre"]:
-            label = QLabel(field.capitalize() + ": " + str(AppInstance.db.get_field_by_id("movies",field,movie.get_id())))
+        movie_id = movie.get_id()
+        db = AppInstance.db
+        for field in ["title", "director", "description",
+                      "duration", "actors", "genre"]:
+            label = (QLabel(field.capitalize() + ": " +
+                     str(db.get_field_by_id("movies", field, movie_id))))
             self.layout.addWidget(label)
-    
-    def get_ratings(self,movie):
+
+    def get_ratings(self, movie):
         """
         Get user ratings for a movie
         """
         mygroupbox = QGroupBox()
         myform = QFormLayout()
+        db = AppInstance.db
 
         reviews = AppInstance.db.get_movie_reviews(movie)
         for review in reviews:
+            user_id = review.get_user_id()
             box_layout = QHBoxLayout()
-            user_label = QLabel(str(AppInstance.db.get_field_by_id("users","login",review.get_user_id())))
+            user_label = QLabel(str(
+                         db.get_field_by_id("users", "login", user_id)))
             rate_label = QLabel(str(review.get_score()))
             box_layout.addWidget(user_label)
             box_layout.addWidget(rate_label)
@@ -60,16 +65,16 @@ class DetailsDialog(FilmwebDialog):
         mygroupbox.setLayout(myform)
         scroll = QScrollArea()
         scroll.setWidget(mygroupbox)
-        scroll.setWidgetResizable(True) 
+        scroll.setWidgetResizable(True)
         box_layout = QHBoxLayout()
         box_layout.addWidget(scroll)
         self.layout.addLayout(box_layout)
 
     @staticmethod
-    def get_movie_details(movie,parent=None):
+    def get_movie_details(movie, parent=None):
         """
         Static method , which creates DetailsDialog about specified movie
         """
-        dialog = DetailsDialog(movie,parent)
+        dialog = DetailsDialog(movie, parent)
         ok = dialog.exec_()
         return ok

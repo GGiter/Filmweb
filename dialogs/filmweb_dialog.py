@@ -1,7 +1,8 @@
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox
+from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QIcon
 import sys
 import os
+
 
 class FilmwebDialog(QDialog):
     """
@@ -9,5 +10,5 @@ class FilmwebDialog(QDialog):
     """
     def __init__(self, movie, parent=None):
         super(FilmwebDialog, self).__init__(parent)
-        self.setWindowIcon(QIcon(os.path.dirname(sys.argv[0]) + '/icons/movie.png'))
-        
+        self.setWindowIcon(QIcon(
+                           os.path.dirname(sys.argv[0]) + '/icons/movie.png'))

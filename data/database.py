@@ -1,15 +1,18 @@
+import os
 from PyQt5 import QtSql
-from PyQt5.QtWidgets import QMessageBox , qApp
+from PyQt5.QtWidgets import QMessageBox, qApp
 from data_objects.movie import Movie
 from data_objects.user import User
 from data_objects.review import Review
-import os
+
 
 class Database:
-   """Class that represents sq lite database.
-      @name : path of the database to load or create , path should be relative to script 
+    """
+      Class that represents sq lite database.
+      @name : path of the database to load or create
+      path should be relative to script
       @db : database object
-   """
+    """
    def __init__(self, name):
       self.name = name
       self.create_database(name)
@@ -215,11 +218,11 @@ class Database:
    def rate_movie(self,user,movie,score):
       """
       Add review to database 
-      update avg rate for each movie
+      update avg rate for  movie
       """
       self.add_review(user.get_id(),movie.get_id(),score)
  
-      #update avg rate for each movie
+      #update avg rate for movie
       reviews = self.get_movie_reviews(movie)
       scores = [review.get_score() for review in reviews]
       if len(reviews) > 0 :

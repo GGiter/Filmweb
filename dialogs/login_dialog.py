@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QLabel, QLineEdit
 from PyQt5.QtWidgets import QGridLayout
 from dialogs.filmweb_dialog import FilmwebDialog
 
+
 # to do add validation for register
 class LoginDialog(FilmwebDialog):
     """ Login dialog window """
@@ -14,7 +15,7 @@ class LoginDialog(FilmwebDialog):
         self.setMaximumWidth(250)
         self.setMaximumHeight(250)
 
-        # widget elements 
+        # widget elements
         login_label = QLabel('Login')
         password_label = QLabel('Password')
         self.login = QLineEdit()
@@ -31,11 +32,11 @@ class LoginDialog(FilmwebDialog):
         layout.addWidget(self.password, 1, 1)
         layout.addWidget(self.buttons, 2, 0, 2, 0)
 
-        # signals and slots 
+        # signals and slots
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)
 
-        # properties of widget 
+        # properties of widget
         self.setModal(True)
         self.setWindowTitle('Login')
 
@@ -43,11 +44,10 @@ class LoginDialog(FilmwebDialog):
         return (self.login.text().strip(),
                 self.password.text().strip())
 
-    
     @staticmethod
     def get_login_password(parent=None):
         """
-        Static method, creates dialog 
+        Static method, creates dialog
         returns (login, password, ok)
         """
         dialog = LoginDialog(parent)
@@ -57,14 +57,13 @@ class LoginDialog(FilmwebDialog):
         return (login, password, ok == QDialog.Accepted)
 
 
-
 class RegisterDialog(FilmwebDialog):
     """ Register dialog window """
 
     def __init__(self, parent=None):
         super(RegisterDialog, self).__init__(parent)
 
-        # widget elements 
+        # widget elements
         loginLb = QLabel('Login')
         emailLb = QLabel("Email")
         passwordLb = QLabel('Password')
@@ -85,11 +84,11 @@ class RegisterDialog(FilmwebDialog):
         layout.addWidget(self.password, 2, 1)
         layout.addWidget(self.buttons, 3, 0, 3, 0)
 
-        # signals and slots 
+        # signals and slots
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)
 
-        # properties of widget 
+        # properties of widget
         self.setModal(True)
         self.setWindowTitle('Register')
 
@@ -98,11 +97,10 @@ class RegisterDialog(FilmwebDialog):
                 self.email.text().strip(),
                 self.password.text().strip())
 
-   
     @staticmethod
     def get_login_password(parent=None):
         """
-        Static method, creates dialog 
+        Static method, creates dialog
         returns (login,email, password, ok)
         """
         dialog = RegisterDialog(parent)
