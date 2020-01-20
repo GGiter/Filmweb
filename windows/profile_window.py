@@ -48,14 +48,15 @@ class ProfileWindow(FilmwebWindow):
             director_label = QLabel(db.get_field_by_id(
                 "movies", "director", review.get_movie_id()))
             score_label = QLabel(str(review.get_score()))
-            if db.get_field_by_id(
-               "movies", "icon_path", review.get_movie_id()) != 'None':
+            icon_path = db.get_field_by_id(
+               "movies", "icon_path", review.get_movie_id())
+            if icon_path != 'None' and len(icon_path) > 0:
                 pixmap = QPixmap(db.get_field_by_id(
                     "movies", "icon_path",
                     review.get_movie_id())).scaled(20, 20)
             else:
                 pixmap = QPixmap(os.path.dirname(
-                    sys.argv[0]) + '/icons/user.png').scaled(20, 20)
+                    sys.argv[0]) + '/icons/movie.png').scaled(20, 20)
             pic = QLabel()
             pic.setPixmap(pixmap)
             box_layout.addWidget(pic)
@@ -111,5 +112,4 @@ class ProfileWindow(FilmwebWindow):
                     widget.setParent(None)
                 else:
                     self.delete_items_of_layout(item.layout())
-
 

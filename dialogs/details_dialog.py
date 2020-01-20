@@ -30,7 +30,7 @@ class DetailsDialog(FilmwebDialog):
         # properties of widget
         self.setModal(True)
         self.setWindowTitle('Details')
- 
+
     def get_details(self, movie):
         """
         Get details about movie

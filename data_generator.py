@@ -35,7 +35,7 @@ class DataGenerator():
                 x += 1
 
     def generate_movies(self):
- 
+
         if self.database is None:
             return
 
@@ -81,7 +81,7 @@ class DataGenerator():
                 actors_string += f'{new_actor},'
                 temporal_actors.remove(new_actor)
                 y = y - 1
- 
+
             actors_string = actors_string[:-1]
 
             if self.database.add_movie(Movie(title, director, description,
@@ -110,5 +110,3 @@ if __name__ == '__main__':
     data_generator.generate_users()
     data_generator.generate_movies()
     data_generator.generate_reviews()
-
-

@@ -89,6 +89,10 @@ class Database:
         query.exec_(f"INSERT INTO users (login,email,password,icon_path)"
                     f" VALUES ('{login}', '{email}' ,'{password}','None')")
 
+        query.exec_(f"SELECT * FROM users WHERE login = '{login}'")
+
+        query.next()
+
         return User(login, email, password,
                     query.record().value("icon_path"),
                     query.record().value("id"))
@@ -148,11 +152,7 @@ class Database:
                           record.value("actors"), record.value("genre"),
                           record.value("icon_path"), record.value("id"))
             movies.append(movie)
-            reviews = self.get_movie_reviews(movie)
-            scores = [review.get_score() for review in reviews]
-            if len(reviews) > 0:
-                movie.set_avg_rate(int(sum(scores)/len(reviews)), len(reviews))
-
+            self.update_movie_avg_rate(movie)
         return movies
 
     def get_movies_by_parameter(self, parameter, value):
@@ -176,7 +176,14 @@ class Database:
                           record.value("actors"), record.value("genre"),
                           record.value("icon_path"), record.value("id"))
             movies.append(movie)
+            self.update_movie_avg_rate(movie)
         return movies
+
+    def update_movie_avg_rate(self, movie):
+        reviews = self.get_movie_reviews(movie)
+        scores = [review.get_score() for review in reviews]
+        if len(reviews) > 0:
+            movie.set_avg_rate(int(sum(scores)/len(reviews)), len(reviews))
 
     def get_user_reviews(self, user):
         """
@@ -238,13 +245,13 @@ class Database:
         Add review to database
         update avg rate for  movie
         """
-        self.add_review(user.get_id(), movie.get_id(), score)
+        ret_value = self.add_review(user.get_id(), movie.get_id(), score)
 
-        # update avg rate for movie
-        reviews = self.get_movie_reviews(movie)
-        scores = [review.get_score() for review in reviews]
-        if len(reviews) > 0:
-            movie.set_avg_rate(int(sum(scores)/len(reviews)), len(reviews))
+        if ret_value is True:
+            # update avg rate for movie
+            self.update_movie_avg_rate(movie)
+
+        return ret_value
 
     def add_review(self, user_id, movie_id, score):
         """

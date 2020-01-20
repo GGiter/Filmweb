@@ -39,5 +39,7 @@ def test_genre():
 def test_duration():
     movie1 = Movie("", "", "", "", "", "")
     movie2 = Movie("", "", "", 10, "", "")
+    movie3 = Movie("", "", "", -10, "", "")
     assert movie1.get_duration() == 0
     assert movie2.get_duration() == 10
+    assert movie3.get_duration() == 10

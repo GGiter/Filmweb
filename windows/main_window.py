@@ -242,7 +242,7 @@ class MainWindow(FilmwebWindow):
         if not ok:
             return
 
-        if movie is None:
+        if movie is None or movie.is_valid() is False:
             QMessageBox.warning(self, 'Error',
                                 'Empty movie details', QMessageBox.Ok)
             return
@@ -256,6 +256,9 @@ class MainWindow(FilmwebWindow):
                                 'Information:', 'Added movie succesfully!',
                                 QMessageBox.Ok)
 
+        # show updated list of movies
+        self.show_latest()
+
     def show_profile(self, user):
         self.switch_window("Profile", user=user)
 
@@ -267,8 +270,11 @@ class MainWindow(FilmwebWindow):
 
     def rate_movie(self, movie, label):
         if AppInstance.current_user:
-            AppInstance.db.rate_movie(
-                AppInstance.current_user, movie, RateDialog.get_rate(self))
+            if AppInstance.db.rate_movie(
+                 AppInstance.current_user,
+                 movie, RateDialog.get_rate(self)) is False:
+                QMessageBox.warning(self, 'Error',
+                                    'Failed to rate movie', QMessageBox.Ok)
             label.setText(str(movie.get_avg_rate()))
         else:
             QMessageBox.warning(self, 'Error',

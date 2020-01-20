@@ -8,12 +8,19 @@ class Movie:
         self.title = title if isinstance(title, str) else ""
         self.director = director if isinstance(director, str) else ""
         self.description = description if isinstance(description, str) else ""
-        self.duration = duration if isinstance(duration, int) else 0
+        self.duration = abs(int(duration)) if self.is_duration_int(duration) else 0
         self.actors = actors if isinstance(actors, str) else ""
         self.genre = genre if isinstance(genre, str) else ""
         self.icon_path = icon_path if isinstance(genre, str) else ""
         self.avg_rate = 0
         self.number_of_users = 0
+
+    def is_duration_int(self, duration):
+        try:
+            int(duration)
+            return True
+        except ValueError:
+            return False
 
     def set_avg_rate(self, avg_rate, number_of_users):
         self.avg_rate = avg_rate
@@ -62,3 +69,6 @@ class Movie:
 
     def get_icon_path(self):
         return self.icon_path
+
+    def is_valid(self):
+        return self.title != "" and self.director != "" and self.duration != 0
