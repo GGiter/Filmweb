@@ -31,7 +31,7 @@ class DataGenerator():
             email += emails_suffixs[randrange(len(emails_suffixs))]
             login = logins[randrange(len(logins))]
             password = passwords[randrange(len(passwords))]
-            if self.database.register_user(login, email, password) is None:
+            if self.database.register_user(login, password, email) is None:
                 x += 1
 
     def generate_movies(self):
@@ -106,7 +106,12 @@ class DataGenerator():
 
 
 if __name__ == '__main__':
-    data_generator = DataGenerator(Database('filmweb.db'))
-    data_generator.generate_users()
-    data_generator.generate_movies()
-    data_generator.generate_reviews()
+    database = Database('filmweb.db')
+    if database.db.open() is False:
+        print("Failed to open database !")
+    else:
+        data_generator = DataGenerator(Database('filmweb.db'))
+        data_generator.generate_users()
+        data_generator.generate_movies()
+        data_generator.generate_reviews()
+        print("Filled database !")

@@ -70,7 +70,7 @@ class Database:
 
         return query.value(0)
 
-    def register_user(self, login, email, password):
+    def register_user(self, login, password, email):
         """
        Register user if data is valid
        return None if fails
