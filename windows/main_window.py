@@ -326,7 +326,7 @@ class MainWindow(FilmwebWindow):
                                 QMessageBox.Ok)
             return
 
-        user = AppInstance.db.register_user(login, email, password)
+        user = AppInstance.db.register_user(login, password, email)
 
         if user is None:
             QMessageBox.warning(self, 'Error',
