@@ -3,11 +3,11 @@ class User:
     class that represents data about user from database
     """
     def __init__(self, login, email, password, icon_path=None, id=None):
-        self.login = login if isinstance(login, str) else ""
-        self.email = email if self.is_email_valid(email) else ""
-        self.password = password if isinstance(password, str) else ""
-        self.icon_path = icon_path
-        self.id = id
+        self._login = login if isinstance(login, str) else ""
+        self._email = email if self.is_email_valid(email) else ""
+        self._password = password if isinstance(password, str) else ""
+        self._icon_path = icon_path
+        self._id = id
 
     def is_email_valid(self, email):
         if isinstance(email, str) and email.find("@") > -1:
@@ -15,16 +15,16 @@ class User:
         return False
 
     def get_login(self):
-        return self.login
+        return self._login
 
     def get_email(self):
-        return self.email
+        return self._email
 
     def get_password(self):
-        return self.password
+        return self._password
 
     def get_id(self):
-        return self.id
+        return self._id
 
     def get_icon_path(self):
-        return self.icon_path
+        return self._icon_path

@@ -4,16 +4,16 @@ class Movie:
     """
     def __init__(self, title, director, description, duration, actors,
                  genre, icon_path=None, id=None):
-        self.id = id
-        self.title = title if isinstance(title, str) else ""
-        self.director = director if isinstance(director, str) else ""
-        self.description = description if isinstance(description, str) else ""
-        self.duration = abs(int(duration)) if self.is_duration_int(duration) else 0
-        self.actors = actors if isinstance(actors, str) else ""
-        self.genre = genre if isinstance(genre, str) else ""
-        self.icon_path = icon_path if isinstance(genre, str) else ""
-        self.avg_rate = 0
-        self.number_of_users = 0
+        self._id = id
+        self._title = title if isinstance(title, str) else ""
+        self._director = director if isinstance(director, str) else ""
+        self._description = description if isinstance(description, str) else ""
+        self._duration = abs(int(duration)) if self.is_duration_int(duration) else 0
+        self._actors = actors if isinstance(actors, str) else ""
+        self._genre = genre if isinstance(genre, str) else ""
+        self._icon_path = icon_path if isinstance(genre, str) else ""
+        self._avg_rate = 0
+        self._number_of_users = 0
 
     def is_duration_int(self, duration):
         try:
@@ -23,8 +23,8 @@ class Movie:
             return False
 
     def set_avg_rate(self, avg_rate, number_of_users):
-        self.avg_rate = avg_rate
-        self.number_of_users = number_of_users
+        self._avg_rate = avg_rate
+        self._number_of_users = number_of_users
 
     def rate(self, value, user):
         """
@@ -35,40 +35,41 @@ class Movie:
         if user is None:
             return False
 
-        self.avg_rate *= self.number_of_users
-        self.avg_rate += value
-        self.number_of_users += 1
-        self.avg_rate /= self.number_of_users
-        self.avg_rate = int(self.avg_rate)
+        self._avg_rate *= self._number_of_users
+        self._avg_rate += value
+        self._number_of_users += 1
+        self._avg_rate /= self._number_of_users
+        self._avg_rate = int(self._avg_rate)
 
         return True
 
     def get_title(self):
-        return self.title
+        return self._title
 
     def get_director(self):
-        return self.director
+        return self._director
 
     def get_avg_rate(self):
-        return self.avg_rate
+        return self._avg_rate
 
     def get_description(self):
-        return self.description
+        return self._description
 
     def get_duration(self):
-        return self.duration
+        return self._duration
 
     def get_actors(self):
-        return self.actors
+        return self._actors
 
     def get_genre(self):
-        return self.genre
+        return self._genre
 
     def get_id(self):
-        return self.id
+        return self._id
 
     def get_icon_path(self):
-        return self.icon_path
+        return self._icon_path
 
     def is_valid(self):
-        return self.title != "" and self.director != "" and self.duration != 0
+        return (self._title != "" and self._director != ""
+                and self._duration != 0)

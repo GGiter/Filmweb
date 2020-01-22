@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox
-from PyQt5.QtWidgets import QLabel, QLineEdit, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QHBoxLayout
+from PyQt5.QtWidgets import QLabel, QLineEdit, QVBoxLayout, QPlainTextEdit
 from data_objects.movie import Movie
 from dialogs.filmweb_dialog import FilmwebDialog
 
@@ -33,13 +33,18 @@ class AddMovieDialog(FilmwebDialog):
         for field in ["title", "director", "description", "duration",
                       "actors", "genre"]:
             box_layout = QHBoxLayout()
+            # multiline support for description box
             label = QLabel(field.capitalize())
-            line_edit = QLineEdit()
+            if field == "description":
+                line_edit = QPlainTextEdit()
+            else:
+                line_edit = QLineEdit()
             self.line_edits.append(line_edit)
             box_layout.addWidget(label)
             box_layout.addWidget(line_edit)
             self.layout.addLayout(box_layout)
 
+ 
     def get_data(self):
         """
         gets data from QLineEdits
@@ -47,7 +52,10 @@ class AddMovieDialog(FilmwebDialog):
         """
         data = []
         for line_edit in self.line_edits:
-            data.append(line_edit.text().strip())
+            if isinstance(line_edit, QLineEdit):
+                data.append(line_edit.text().strip())
+            else:
+                data.append(line_edit.toPlainText())
         return Movie(*data)
 
     @staticmethod
